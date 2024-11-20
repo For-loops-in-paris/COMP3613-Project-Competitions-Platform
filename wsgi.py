@@ -129,9 +129,23 @@ def initialize():
 '''
 Student Commands
 '''
+#use case 8 all users should be able to see leaderboard get leaderboard calls this function
+@app.cli.command("leaderboard", help="Displays the overall leaderboard for all users")
+def view_leaderboard_command():
+    leaderboard = get_leaderboard()  
+    if not leaderboard:
+        click.echo("No leaderboard data available.")
+        return
+
+    click.echo("Leaderboard:")
+    for rank, entry in enumerate(leaderboard, start=1):
+        click.echo(f"{rank}. {entry['username']} - Score: {entry['score']}")
+
 
 student_cli = AppGroup("student", help="Student commands") 
 
+
+#sign up student here
 @student_cli.command("create", help="Creates a student")
 @click.argument("username", default="stud1")
 @click.argument("password", default="stud1pass")
@@ -152,15 +166,23 @@ def list_students_command(format):
     else:
         print(get_all_students_json())
 
+#use case 7 all users view student details atm does not display rank
 @student_cli.command("display", help="Displays student profile")
 @click.argument("username", default="stud1")
 def display_student_info_command(username):
     print(display_student_info(username))
 
+#use cas 9 display notifications when rank updates for a student
 @student_cli.command("notifications", help="Gets all notifications")
 @click.argument("username", default="stud1")
 def display_notifications_command(username):
     print(display_notifications(username))
+
+#command to display ranking conroller calls this
+@student_cli.command("DisplayRanking", help="this command displays the ranking of specified student")
+@click.argument("username",default="stud1")
+def display_ranking_command(username):
+    print(display__student_ranking(username))
 
 app.cli.add_command(student_cli)
 
@@ -171,6 +193,7 @@ Moderator Commands
 
 mod_cli = AppGroup("mod", help="Moderator commands") 
 
+#use case 1 signup moderato add jwt
 @mod_cli.command("create", help="Creates a moderator")
 @click.argument("username", default="mod1")
 @click.argument("password", default="mod1pass")
@@ -197,6 +220,7 @@ def add_team_to_comp_command(mod_name, comp_name, team_name, student1, student2,
     comp = add_team(mod_name, comp_name, team_name, students)
 """
 
+#Moderators shoudl be able to add results
 @mod_cli.command("addResults", help="Adds results for a team in a competition")
 @click.argument("mod_name", default="mod1")
 @click.argument("comp_name", default="comp1")
@@ -211,6 +235,29 @@ def add_results_command(mod_name, comp_name, team_name, student1, student2, stud
 
     if comp:
         comp_team = add_results(mod_name, comp_name, team_name, score)
+
+#Moderators should be able to update results use case 4 ^ 
+@mod_cli.command("updateResults", help="Updates results for a team in a competition by competition ID")
+@click.argument("comp_id", type=int)
+@click.argument("team_name", default="team1")
+@click.argument("student1", default="stud1")
+@click.argument("student2", default="stud2")
+@click.argument("student3", default="stud3")
+@click.argument("score", type=int)
+def update_results_command(comp_id, team_name, student1, student2, student3, score):
+    """
+    Updates the results for a team in a given competition by competition ID.
+    
+    Args:
+        comp_id (int): ID of the competition to update.
+        team_name (str): Name of the team.
+        student1 (str): First student in the team.
+        student2 (str): Second student in the team.
+        student3 (str): Third student in the team.
+        score (int): New score for the team.
+    """
+
+
 
 @mod_cli.command("confirm", help="Confirms results for all teams in a competition")
 @click.argument("mod_name", default="mod1")
@@ -256,10 +303,12 @@ def display_competition_details_command(name):
     comp = get_competition_by_name(name)
     print(comp.get_json())
 
+#use case 5 list all competitions
 @comp_cli.command("list", help = "list all competitions")
 def list_competition_command():
     print(get_all_competitions_json())
 
+#list competition results maybe this should require id instead use case 6 
 @comp_cli.command("results", help = "displays competition results")
 @click.argument("name", default = "comp1")
 def display_competition_results_command(name):
