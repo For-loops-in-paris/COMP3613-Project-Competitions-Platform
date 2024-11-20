@@ -50,6 +50,7 @@ def update_student(id, username):
     print("ID: {id} does not exist!")
     return None
 
+#todo:  change so that student rank is also in info
 def display_student_info(username):
     student = get_student_by_username(username)
 
