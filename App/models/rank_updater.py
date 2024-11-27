@@ -1,10 +1,11 @@
 from App.database import db
 
-class Ranking(db.model):
+class RankUpdater(db.Model):
+
+    __tablename__ = 'rankupdater'
 
     id = db.Column(db.Integer, primary_key=True)
-    past_leaderboards = db.relationship("Leaderboard",)
-    users = db.relationship("User")
+    students = db.relationship("Student",backref = "updater",lazy=True)
 
     def get_json(self):
         return {
@@ -13,3 +14,7 @@ class Ranking(db.model):
 
         }
     
+   
+
+        
+

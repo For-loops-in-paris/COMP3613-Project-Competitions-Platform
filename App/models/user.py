@@ -9,12 +9,12 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username =  db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String(120), nullable=False)
-    past_ranks = db.relationship("Leaderboard",secondary="ranking")
     
     
     def __init__(self, username, password):
         self.username = username
         self.set_password(password)
+        self.past_ranks=[]
 
     def get_json(self):
         return{
