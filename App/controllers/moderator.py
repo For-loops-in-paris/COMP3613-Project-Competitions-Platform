@@ -55,24 +55,13 @@ def update_moderator(id, username):
     return None
 
 def add_mod(mod1_name, comp_name, mod2_name):
-    mod1 = Moderator.query.filter_by(username=mod1_name).first()
-    comp = Competition.query.filter_by(name=comp_name).first()
-    mod2 = Moderator.query.filter_by(username=mod2_name).first()
+    mod1 = get_moderator_by_username(mod1_name)
+    mod2 = get_moderator_by_username(mod2_name)
+    comp = get_competition_by_name(comp_name)
 
-    if not mod1:
-        print(f'Moderator: {mod1_name} not found!')
+    if not mod1 or not mod2 or not comp:
         return None
-    elif not comp:
-        print(f'Competition: {comp_name} not found!')
-        return None
-    elif not mod2:
-        print(f'Moderator: {mod2_name} not found!')
-        return None
-    elif not mod1 in comp.moderators:
-        print(f'{mod1_name} is not authorized to add results for {comp_name}!')
-        return None
-    else:
-        return comp.add_mod(mod2)
+    return comp.add_mod(mod2)
                 
 def add_results(mod_name, comp_name, team_name, score):
     mod = get_moderator_by_username(mod_name)
@@ -104,7 +93,7 @@ def update_ratings(mod_name, comp_name):
     mod = get_moderator_by_username(mod_name)
     comp = get_competition_by_name(comp_name)
     
-    if not isValid():
+    if not isValid(mod,comp):
         return None
     comp_teams = CompetitionTeam.query.filter_by(comp_id=comp.id).all()
 
