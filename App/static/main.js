@@ -26,6 +26,9 @@ function openNav(){
 function closeNav(){
     document.getElementById("sidepanel").style.width = "0";
 }
+function closeFlash(){
+    document.getElementById("flashmessage").style.display = "none";
+}
 
 /*function closeMessage(){
     document.getElementById("error_message").style.display = "none";

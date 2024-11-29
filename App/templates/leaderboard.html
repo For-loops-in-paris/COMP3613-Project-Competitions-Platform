@@ -8,6 +8,22 @@
 
 <style>
 
+    .alertwarning#button {
+        background-color: white;
+        border-radius: 10px;
+    }
+
+    .success {
+        color: white;
+        font-size: 1em;
+    }
+
+    .error {
+        color: white;
+        font-size: .9em;
+        text-decoration: underline;
+    }
+    
     .tables-container {
         display: flex;
         justify-content: space-between;
@@ -52,6 +68,14 @@
 <div class="container">
     <div class="tables-container">
         <div class="leaderboard-table">
+            <!-- for displaying the flashed messages -->
+            <div id = "flashmessage" class = "flashmessage">
+                {% for category, message in get_flashed_messages(with_categories=true) %}
+                    <button onclick="closeFlash()">X</button>
+                    <div class = "{{category}}">{{ message }}</div>
+                {% endfor %}
+            </div>
+
             <center>
                 <h2 style="color: white; background-color: black; border-radius: 15px;">Leaderboard</h2>
             </center>
