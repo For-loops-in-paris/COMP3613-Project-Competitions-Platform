@@ -14,6 +14,7 @@ class User(db.Model, UserMixin):
     def __init__(self, username, password):
         self.username = username
         self.set_password(password)
+        self.past_ranks=[]
 
     def get_json(self):
         return{
