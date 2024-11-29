@@ -1,6 +1,6 @@
 from App.database import db
 from App.models import Moderator, Competition, Team, CompetitionTeam
-from App.controllers import get_competition_by_name
+from App.controllers import get_competition_by_name, is_completed,get_num_teams
 
 def create_moderator(username, password):
     mod = get_moderator_by_username(username)
@@ -79,35 +79,24 @@ def add_results(mod_name, comp_name, team_name, score):
     comp = get_competition_by_name(comp_name)
     teams = Team.query.filter_by(name=team_name).all()
 
-    if not mod:
-        print(f'{mod_name} was not found!')
-        return None
-    else:
-        if not comp:
-            print(f'{comp_name} was not found!')
-            return None
-        elif comp.confirm:
-            print(f'Results for {comp_name} have already been finalized!')
-            return None
-        elif mod not in comp.moderators:
-            print(f'{mod_name} is not authorized to add results for {comp_name}!')
-            return None
-        else:
-            for team in teams:
-                comp_team = CompetitionTeam.query.filter_by(comp_id=comp.id, team_id=team.id).first()
+    if not isValid(mod,comp):
+        return False
 
-                if comp_team:
-                    comp_team.points_earned = score
-                    comp_team.rating_score = (score/comp.max_score) * 20 * comp.level
-                    try:
-                        db.session.add(comp_team)
-                        db.session.commit()
-                        print(f'Score successfully added for {team_name}!')
-                        return comp_team
-                    except Exception as e:
-                        db.session.rollback()
-                        print("Something went wrong!")
-                        return None
+    for team in teams:
+        comp_team = CompetitionTeam.query.filter_by(comp_id=comp.id, team_id=team.id).first()
+
+        if comp_team:
+            comp_team.points_earned = score
+            comp_team.rating_score = (score/comp.max_score) * 20 * comp.level
+            try:
+                db.session.add(comp_team)
+                db.session.commit()
+                print(f'Score successfully added for {team_name}!')
+                return comp_team
+            except Exception as e:
+                db.session.rollback()
+                print("Something went wrong!")
+                return None
     return None
 
 
@@ -115,7 +104,8 @@ def update_ratings(mod_name, comp_name):
     mod = get_moderator_by_username(mod_name)
     comp = get_competition_by_name(comp_name)
     
-  
+    if not isValid():
+        return None
     comp_teams = CompetitionTeam.query.filter_by(comp_id=comp.id).all()
 
     for comp_team in comp_teams:
@@ -135,25 +125,14 @@ def update_ratings(mod_name, comp_name):
     return True
 
 
-def isRegisteredMod(mod,comp,mod_name,comp_name):
+def isRegisteredMod(mod,comp):
     if mod not in comp.moderators:
-        print(f'{mod_name} is not authorized to add results for {comp_name}!')
+        print(f'{mod.username} is not authorized to add results for {comp.name}!')
         return False
     return True
 
-def isValid(mod,comp,mod_name,comp_name):
-    # if not mod or not comp or comp.confirm or   :
-    #     return False
-    if not comp:
-        print(f'{comp_name} was not found!')
+def isValid(mod,comp):
+    if not mod or not comp or is_completed(comp) or not isRegisteredMod(mod,comp) or get_num_teams(comp)==0:
         return False
-    elif comp.confirm:
-        print(f'Results for {comp_name} has already been finalized!')
-        return False
-    elif mod not in comp.moderators:
-        print(f'{mod_name} is not authorized to add results for {comp_name}!')
-        return False
-    elif len(comp.teams) == 0:
-        print(f'No teams found. Results can not be confirmed!')
-        return False
+    return True
     
