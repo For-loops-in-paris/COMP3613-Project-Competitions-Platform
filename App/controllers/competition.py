@@ -25,7 +25,10 @@ def create_competition(mod_name, comp_name, date, location, level, max_score):
         print("Invalid credentials!")
 
 def get_competition_by_name(name):
-    return Competition.query.filter_by(name=name).first()
+    comp =Competition.query.filter_by(name=name).first()
+    if not comp:
+        print(f'{name} was not found!')
+    return comp
 
 def get_competition(id):
     return Competition.query.get(id)
