@@ -25,7 +25,10 @@ def create_competition(mod_name, comp_name, date, location, level, max_score):
         print("Invalid credentials!")
 
 def get_competition_by_name(name):
-    return Competition.query.filter_by(name=name).first()
+    comp =Competition.query.filter_by(name=name).first()
+    if not comp:
+        print(f'{name} was not found!')
+    return comp
 
 def get_competition(id):
     return Competition.query.get(id)
@@ -33,6 +36,17 @@ def get_competition(id):
 def get_all_competitions():
     return Competition.query.all()
 
+def is_completed(comp):
+    completed = comp.confirm
+    if completed:
+        print(f'Results for {comp.name} has already been finalized!')
+    return completed
+
+def get_num_teams(comp):
+    num_teams = len(comp.teams)
+    if len(comp.teams) == 0:
+        print(f'No teams found. Results can not be confirmed!')
+    return num_teams
 def get_all_competitions_json():
     competitions = Competition.query.all()
 
