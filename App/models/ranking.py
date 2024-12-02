@@ -5,6 +5,7 @@ class Ranking(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('student.id'), nullable=False)
     leaderboard_id =  db.Column(db.Integer, db.ForeignKey('leaderboard.id'), nullable=False)
+    rank = db.Column(db.Integer,nullable=False)
 
     def get_json(self):
         return {
@@ -13,3 +14,10 @@ class Ranking(db.Model):
 
         }
     
+    def __init__(self,user_id,leaderboard_id,rank):
+        self.user_id = user_id
+        self.leaderboard_id = leaderboard_id
+        self.rank=rank
+    
+    def __repr__(self):
+        return f"User: {self.user_id} Rank: {self.rank}"

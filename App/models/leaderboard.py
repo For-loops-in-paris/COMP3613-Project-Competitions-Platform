@@ -1,16 +1,16 @@
 from App.database import db
+from datetime import datetime
 
 class Leaderboard(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
-    competition_id = db.Column(db.Integer, db.ForeignKey('competition.id'), nullable=False)
+    date = db.Column(db.DateTime,default=datetime.now())
     user =  db.relationship("Student",secondary="ranking")
 
     def get_json(self):
         
         return {
-            "comp_id": self.comp_id,
-            "leaderboard_id":self.leaderboard_id
-
+            "id": self.id,
+            "date":self.date.strftime("%d %b %Y")
         }
     
