@@ -11,7 +11,7 @@ class Student(User):
     teams = db.relationship('Team', secondary='student_team', overlaps='students', lazy=True)
     notifications = db.relationship('Notification', backref='student', lazy=True)
     rank_updater = db.Column(db.Integer,db.ForeignKey("rankupdater.id"))
-    decay = db.Column(db.Integer,nullable=False)
+    rank_decay = db.Column(db.Integer,nullable=False)
     past_ranks = db.relationship("Leaderboard",secondary="ranking", backref = 'student',lazy=True)
 
 

@@ -27,6 +27,9 @@ def get_student(id):
 def get_all_students():
     return Student.query.all()
 
+def get_decayed_students():
+    return Student.query.filter_by(rank_decay=3)
+
 def get_all_students_json():
     students = Student.query.all()
     if not students:
