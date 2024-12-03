@@ -28,17 +28,8 @@ def update_ratings(mod_name, comp_name):
         team = Team.query.filter_by(id=comp_team.team_id).first()
 
         for stud in team.students:
-            stud.rating_score = (stud.rating_score*stud.comp_count + comp_team.rating_score)/(stud.comp_count+1)
-            
-            stud.comp_count += 1
-            if stud.comp_count == 1:
-                stud.rank_updater=1   
-            stud.rank_decay = -1
-            try:
-                db.session.add(stud)
-                db.session.commit()
-            except Exception as e:
-                db.session.rollback()
+            score = (stud.rating_score*stud.comp_count + comp_team.rating_score)/(stud.comp_count+1)
+            stud.update_stats(score)
 
     comp.confirm = True
     print("Results finalized!")
@@ -52,23 +43,18 @@ def update_rankings():
 
     count = 1
     
-    curr_high = students[0].rating_score
     curr_rank = 1
     
     for student in students:
         if student.rank_decay<3:
             student.rank_decay+=1
 
-        if curr_high != student.rating_score:
-            curr_rank = count
-            curr_high = student.rating_score
-
         if student.comp_count != 0:
             ranking = Ranking(student.id,Leaderboard.query.count(),count,student.rating_score)
             count += 1
     
             notification = Notification(student.id, create_notification(student.comp_count,student.curr_rank,curr_rank))
-            student.curr_rank = curr_rank
+            student.update_ranking(curr_rank)
             try:
                 db.session.add(student)
                 db.session.add(notification)

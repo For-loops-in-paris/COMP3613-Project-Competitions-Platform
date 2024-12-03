@@ -42,6 +42,26 @@ class Student(User):
             "curr_rank" : self.curr_rank
         }
 
+    def update_stats(self,score):
+        self.rating_score =score
+        self.comp_count+=1    
+        if self.comp_count == 1:
+            self.rank_updater=1   
+        self.rank_decay = -1
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception as e:
+            db.session.rollback()
+
+    def update_ranking(self,ranking):
+        self.curr_rank = ranking
+        try:
+            db.session.add(self)
+            db.session.commit()
+        except Exception:
+            db.session.rollback()
+       
     def to_Dict(self):
         return {
             "ID": self.id,
