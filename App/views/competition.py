@@ -39,6 +39,20 @@ def create_comp():
     date = data['date']
     date = date[8] + date[9] + '-' + date[5] + date[6] + '-' + date[0] + date[1] + date[2] + date[3]
     
+    new_comp_name = data['name']
+    all_competitions = get_all_competitions()
+
+    for comp in all_competitions:
+        if comp.name == new_comp_name:
+            flash('Competition name already taken! Please try another name', 'error')
+            return redirect(url_for('comp_views.create_comp_page'))
+        
+    new_comp_score = int(data['max_score'])
+    if new_comp_score < 1:
+        flash('Competition max score must be above 0! Try again', 'error')
+        return redirect(url_for('comp_views.create_comp_page'))
+
+    
     response = create_competition(moderator.username, data['name'], date, data['location'], data['level'], data['max_score'])
     return render_template('competitions.html', competitions=get_all_competitions(), user=current_user)
     #return (jsonify({'message': "Competition created!"}), 201)
