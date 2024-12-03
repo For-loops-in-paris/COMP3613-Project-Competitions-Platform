@@ -7,12 +7,11 @@ class Student(User):
     rating_score = db.Column(db.Float, nullable=False, default=0)
     comp_count = db.Column(db.Integer, nullable=False, default=0)
     curr_rank = db.Column(db.Integer, nullable=False, default=0)
-    prev_rank = db.Column(db.Integer, nullable=False, default=0)
     teams = db.relationship('Team', secondary='student_team', overlaps='students', lazy=True)
     notifications = db.relationship('Notification', backref='student', lazy=True)
     rank_updater = db.Column(db.Integer,db.ForeignKey("rankupdater.id"))
     rank_decay = db.Column(db.Integer,nullable=False)
-    past_ranks = db.relationship("Leaderboard",secondary="ranking", backref = 'student',lazy=True)
+    past_leaderboard_ranks = db.relationship("Leaderboard",secondary="ranking", backref = 'students',lazy=True)
 
 
     def __init__(self, username, password):
@@ -20,7 +19,6 @@ class Student(User):
         self.rating_score = 0
         self.comp_count = 0
         self.curr_rank = 0
-        self.prev_rank = 0
         self.decay=0
         self.teams = []
         self.notifications = []

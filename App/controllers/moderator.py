@@ -102,7 +102,11 @@ def update_ratings(mod_name, comp_name):
 
         for stud in team.students:
             stud.rating_score = (stud.rating_score*stud.comp_count + comp_team.rating_score)/(stud.comp_count+1)
+            
             stud.comp_count += 1
+            if stud.comp_count == 1:
+                stud.rank_updater=1    
+            stud.rank_decay = -1
             try:
                 db.session.add(stud)
                 db.session.commit()
