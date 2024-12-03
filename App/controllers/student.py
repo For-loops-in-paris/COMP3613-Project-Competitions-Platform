@@ -27,6 +27,9 @@ def get_student(id):
 def get_all_students():
     return Student.query.all()
 
+def get_decayed_students():
+    return Student.query.filter_by(rank_decay=3)
+
 def get_all_students_json():
     students = Student.query.all()
     if not students:
@@ -98,6 +101,8 @@ def update_rankings():
     db.session.commit()
     
     for student in students:
+        if student.rank_decay<3:
+            student.rank_decay+=1
 
         if curr_high != student.rating_score:
             curr_rank = count
