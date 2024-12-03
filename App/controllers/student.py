@@ -95,10 +95,7 @@ def update_rankings():
     
     curr_high = students[0].rating_score
     curr_rank = 1
-    ldbd = Leaderboard()
 
-    db.session.add(ldbd)
-    db.session.commit()
     
     for student in students:
         if student.rank_decay<3:
@@ -110,7 +107,7 @@ def update_rankings():
 
         if student.comp_count != 0:
             leaderboard.append({"placement": curr_rank, "student": student.username, "rating score":student.rating_score})
-            ranking = Ranking(student.id,ldbd.id,count,student.rating_score)
+            ranking = Ranking(student.id,Leaderboard.query.count(),count,student.rating_score)
             count += 1
         
             

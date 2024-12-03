@@ -6,8 +6,25 @@
 
 {% block content %}
 
+<script>
+    $(document).ready(function(){
+        $('.modal').modal();
+        $('.dropdown-trigger').dropdown();
+    });
+</script> 
+
 <style>
 
+    .dropdown-content{
+        background-color: black;
+        width: max-content !important;
+        height:auto !important;
+    }
+
+    a:hover {
+        background-color: #2c2c2c;
+    }
+    
     .alertwarning#button {
         background-color: white;
         border-radius: 10px;
@@ -72,9 +89,27 @@
                     <div class = "{{category}}">{{ message }}</div>
                 {% endfor %}
             </div>
+            
             <center>
-                <h2 style="color: white; background-color: black; border-radius: 15px;">Leaderboard</h2>
+               
+                <div style= "background-color: black; border-radius: 15px;">
+                    <ul>
+                    
+                        <li>
+                            <a class="dropdown-trigger" data-target="dropdown">
+                            <h2 style="color: white;">Leaderboard <i class="material-icons">arrow_drop_down</i></h2>
+                            </a>
+                        </li>
+                    
+                    </ul>
+                </div> 
+                <ul id="dropdown" class="dropdown-content">
+                    {% for num in range(num_leaderboard) %}
+                    <li><a style = "color: white;" href="{{ url_for('index_views.leaderboard_page', leaderboard_id=num+1 ) }}">Leaderboard on: {{ all_leaderboards[num].date.strftime("%d %b %Y") }} </a></li>
+                    {% endfor %}
+                </ul>
             </center>
+
             <table class="table" style="font-family: verdana;">
                 <thead>
                     <tr style="color: white;">

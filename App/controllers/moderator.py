@@ -1,5 +1,5 @@
 from App.database import db
-from App.models import Moderator, Competition, Team, CompetitionTeam
+from App.models import Moderator, Competition, Team, CompetitionTeam, Leaderboard
 from App.controllers import get_competition_by_name, is_completed,get_num_teams
 
 def create_moderator(username, password):
@@ -96,6 +96,9 @@ def update_ratings(mod_name, comp_name):
     if not isValid(mod,comp):
         return None
     comp_teams = CompetitionTeam.query.filter_by(comp_id=comp.id).all()
+    
+    db.session.add(Leaderboard(comp.date))
+    db.session.commit()
 
     for comp_team in comp_teams:
         team = Team.query.filter_by(id=comp_team.team_id).first()

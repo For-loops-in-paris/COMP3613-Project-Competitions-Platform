@@ -19,7 +19,7 @@ def leaderboard_page(leaderboard_id = 0):
     page = request.args.get('page', 1, type=int)
     leaderboard = Ranking.search_ranking(Ranking, page, leaderboard_id)
 
-    return render_template('leaderboard.html', leaderboard=leaderboard, user=current_user, leaderboard_id=leaderboard_id)
+    return render_template('leaderboard.html', leaderboard=leaderboard, user=current_user, leaderboard_id=leaderboard_id, all_leaderboards=Leaderboard.query.all(), num_leaderboard=Leaderboard.query.count())
 
 @index_views.route('/init', methods=['GET'])
 def init():

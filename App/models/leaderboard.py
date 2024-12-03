@@ -14,3 +14,6 @@ class Leaderboard(db.Model):
             "date":self.date.strftime("%d %b %Y")
         }
     
+    def __init__(self, date):
+        self.date=date
+    
