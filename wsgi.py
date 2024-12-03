@@ -21,6 +21,10 @@ def initialize():
     db.drop_all()
     db.create_all()
 
+    #Create Rank Updater
+    db.session.add(RankUpdater())
+    db.session.commit()
+    print(RankUpdater.query.get(1))
     #creates students
     with open("students.csv") as student_file:
         reader = csv.DictReader(student_file)
@@ -69,8 +73,9 @@ def initialize():
 
         for competition in reader:
             if competition['comp_name'] != 'TopCoder':
-                update_ratings(competition['mod_name'], competition['comp_name'])
-                update_rankings()
+                update_leaderboard(competition['mod_name'], competition['comp_name'])
+                # update_ratings(competition['mod_name'], competition['comp_name'])
+                # update_rankings()
             #db.session.add(comp)
         #db.session.commit()
     

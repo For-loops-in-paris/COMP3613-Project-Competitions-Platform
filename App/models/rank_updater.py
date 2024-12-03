@@ -1,4 +1,5 @@
 from App.database import db
+from App.models import Student
 
 class RankUpdater(db.Model):
 
@@ -13,6 +14,9 @@ class RankUpdater(db.Model):
             "leaderboard_id":self.leaderboard_id
 
         }
+    
+    def get_students(self):
+        return RankUpdater.query.get(1).students
     
    
 

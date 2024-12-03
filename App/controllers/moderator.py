@@ -88,38 +88,10 @@ def add_results(mod_name, comp_name, team_name, score):
                 return None
     return None
 
-
-def update_ratings(mod_name, comp_name):
-    mod = get_moderator_by_username(mod_name)
-    comp = get_competition_by_name(comp_name)
-    
-    if not isValid(mod,comp):
-        return None
-    comp_teams = CompetitionTeam.query.filter_by(comp_id=comp.id).all()
-    
-    db.session.add(Leaderboard(comp.date))
-    db.session.commit()
-
-    for comp_team in comp_teams:
-        team = Team.query.filter_by(id=comp_team.team_id).first()
-
-        for stud in team.students:
-            stud.rating_score = (stud.rating_score*stud.comp_count + comp_team.rating_score)/(stud.comp_count+1)
-            
-            stud.comp_count += 1
-            if stud.comp_count == 1:
-                stud.rank_updater=1    
-            stud.rank_decay = -1
-            try:
-                db.session.add(stud)
-                db.session.commit()
-            except Exception as e:
-                db.session.rollback()
-
-    comp.confirm = True
-    print("Results finalized!")
+def isValid(mod,comp):
+    if not mod or not comp or is_completed(comp) or not isRegisteredMod(mod,comp) or get_num_teams(comp)==0:
+        return False
     return True
-
 
 def isRegisteredMod(mod,comp):
     if mod not in comp.moderators:
@@ -127,8 +99,4 @@ def isRegisteredMod(mod,comp):
         return False
     return True
 
-def isValid(mod,comp):
-    if not mod or not comp or is_completed(comp) or not isRegisteredMod(mod,comp) or get_num_teams(comp)==0:
-        return False
-    return True
     
