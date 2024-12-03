@@ -11,8 +11,7 @@ class Student(User):
     notifications = db.relationship('Notification', backref='student', lazy=True)
     rank_updater = db.Column(db.Integer,db.ForeignKey("rankupdater.id"))
     rank_decay = db.Column(db.Integer,nullable=False)
-    past_leaderboard_ranks = db.relationship("Leaderboard",secondary="ranking", backref = 'students',lazy=True)
-
+    past_leaderboard_ranks = db.relationship("Ranking", backref = 'student',lazy=True)
 
     def __init__(self, username, password):
         super().__init__(username, password)
