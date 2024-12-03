@@ -1,12 +1,12 @@
 services:
 - type: web
-  name: competitions-platform
+  name: "For Loops In Paris - Competitions-Platform"
   env: python
-  repo: https://github.com/Ara-Ara-Arabiansss/SoftwareEngineering.git
+  repo: https://github.com/For-loops-in-paris/COMP3613-Project-Competitions-Platform.git
   plan: free
   branch: main
-  healthCheckPath: /healthcheck
-  buildCommand: "pip install -r requirements.txt"
+  healthCheckPath: /healthz
+  buildCommand: "pip install -r requirements.txt && flask init"
   startCommand: "gunicorn wsgi:app"
   envVars:
   - key: ENV
@@ -14,14 +14,15 @@ services:
   - key: JWT_TOKEN_EXPIRES
     value: 7
   - key: SECRET_KEY
-    value: a939121b63a73f88bce37d0d1469a006
+    value: c927883328f86cc0cd63f2091aeea7fa
   - key: SQLALCHEMY_DATABASE_URI
-    value: postgresql://competitions_platform_db_gfy9_user:ZwKvA8Tja028QeC1a0zGNH5DC2ttRPRy@dpg-cki6f9mafg7c73fcnndg-a/competitions_platform_db_gfy9
+    value: postgresql://kanye:LycMvh7hrljZCO8ATphNOZw5hmzwFCzz@dpg-ct73qt9u0jms73dlnarg-a/forloopsinparis
 
 databases:
-- name: competitions_platform_db
+- name: for-loops-in-paris-database
+  user: kanye
   plan: free
-  databaseName: mydb
+  databaseName: forloopsinparis
   
 # services:
 # - type: web
