@@ -160,6 +160,17 @@ def add_competition_results(comp_name):
         return redirect(url_for('comp_views.add_results_page', comp_id=competition.id))
     else:
         students = [data['student1'], data['student2'], data['student3']]
+        comp_teams = competition.teams
+        for student in students:
+            for team in comp_teams:
+                if team.name == data['team_name']:
+                    flash('Team name: ' + team.name + ' already taken for this competition! Please try another', 'error')
+                    return redirect(url_for('comp_views.add_results_page', comp_id=competition.id))
+                for team_student in team.students:
+                    if team_student.username == student:
+                        flash(student + ' already registered for ' + team.name + '! Please try again', 'error')
+                        return redirect(url_for('comp_views.add_results_page', comp_id=competition.id))
+
         response = add_team(moderator.username, comp_name, data['team_name'], students)
 
         if response:
