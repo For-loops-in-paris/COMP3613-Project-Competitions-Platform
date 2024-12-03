@@ -1,7 +1,7 @@
 from flask import Blueprint, redirect, render_template, request, send_from_directory, jsonify, session
 from flask_jwt_extended import jwt_required, current_user as jwt_current_user
 from flask_login import login_required, login_user, current_user, logout_user
-from App.models import db
+from App.models import db,Leaderboard, Ranking
 from App.controllers import *
 import csv
 
@@ -11,9 +11,15 @@ index_views = Blueprint('index_views', __name__, template_folder='../templates')
 def home_page():
     return render_template('leaderboard.html', leaderboard=display_rankings(), user=current_user)
 
-@index_views.route('/leaderboard', methods=['GET'])
-def leaderboard_page():
-    return render_template('leaderboard.html', leaderboard=display_rankings(), user=current_user)#, competitions=get_all_competitions(), moderators=get_all_moderators())
+@index_views.route('/leaderboard/<int:leaderboard_id>', methods=['GET'])
+def leaderboard_page(leaderboard_id = 0):
+    if leaderboard_id == 0:
+        leaderboard_id = Leaderboard.query.count()
+
+    page = request.args.get('page', 1, type=int)
+    leaderboard = Ranking.search_ranking(Ranking, page, leaderboard_id)
+
+    return render_template('leaderboard.html', leaderboard=leaderboard, user=current_user, leaderboard_id=leaderboard_id)
 
 @index_views.route('/init', methods=['GET'])
 def init():

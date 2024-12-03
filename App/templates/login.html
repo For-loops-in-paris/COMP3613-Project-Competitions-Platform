@@ -8,6 +8,15 @@
 
 <style>
 
+    .success {
+        color: white;
+        font-size: 1em;
+    }
+    .error {
+        color: white;
+        font-size: .9em;
+        text-decoration: underline;
+    }
     .center{
         margin: 0;
         padding: 0;
@@ -135,12 +144,12 @@
         
         <div class="txt_field">
             <input style="color: white;" type="text"  id="username" name="username" required>
-            <label style="color: white;" for="username">Username:</label>
+            <label style="color: white;" for="username">Username</label>
         </div>
 
         <div class="txt_field">
             <input type="password" style="color: white;" id="password" name="password" required>
-            <label style="color: white;" for="password">Password:</label>
+            <label style="color: white;" for="password">Password</label>
         </div>
 
         <input type="submit" class="btn black" value="Login">
@@ -148,6 +157,14 @@
 
     <div style="color: white; margin: 25px;" class="signup_link">
         Not a user? <a style="color: white; text-decoration: underline;" href="{{ url_for('auth_views.signup') }}" class="signup-link">Sign Up</a>
+    </div>
+    
+    <div id = "flashmessage" class = "flashmessage">
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+            <button onclick="closeFlash()">X</button>
+            <div class = "{{category}}">{{ message }}</div>
+        {% endfor %}
+        </div>
     </div>
 </div>
  

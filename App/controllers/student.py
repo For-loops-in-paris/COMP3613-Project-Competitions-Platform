@@ -110,7 +110,7 @@ def update_rankings():
 
         if student.comp_count != 0:
             leaderboard.append({"placement": curr_rank, "student": student.username, "rating score":student.rating_score})
-            ranking = Ranking(student.id,ldbd.id,curr_rank)
+            ranking = Ranking(student.id,ldbd.id,count,student.rating_score)
             count += 1
         
             
