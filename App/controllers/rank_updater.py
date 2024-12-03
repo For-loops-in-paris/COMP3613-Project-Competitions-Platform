@@ -1,6 +1,6 @@
 from App.database import db
 from App.models import  RankUpdater, CompetitionTeam, Leaderboard, Team, Notification, Ranking
-from App.controllers import get_decayed_students, get_competition_by_name,get_moderator_by_username, get_all_students, create_notification, isValid
+from App.controllers import get_decayed_students, get_competition_by_name,get_moderator_by_username, create_notification, isValid
 
 def update_leaderboard(mod_name,comp_name):
     if update_ratings(mod_name, comp_name):
@@ -32,7 +32,7 @@ def update_ratings(mod_name, comp_name):
             
             stud.comp_count += 1
             if stud.comp_count == 1:
-                stud.rank_updater=1    
+                stud.rank_updater=1   
             stud.rank_decay = -1
             try:
                 db.session.add(stud)
@@ -46,16 +46,14 @@ def update_ratings(mod_name, comp_name):
 
 
 def update_rankings():
-    students = get_all_students()
+    students = RankUpdater.get_students(RankUpdater)
     
     students.sort(key=lambda x: (x.rating_score, x.comp_count), reverse=True)
 
-    leaderboard = []
     count = 1
     
     curr_high = students[0].rating_score
     curr_rank = 1
-
     
     for student in students:
         if student.rank_decay<3:
@@ -66,7 +64,6 @@ def update_rankings():
             curr_high = student.rating_score
 
         if student.comp_count != 0:
-            leaderboard.append({"placement": curr_rank, "student": student.username, "rating score":student.rating_score})
             ranking = Ranking(student.id,Leaderboard.query.count(),count,student.rating_score)
             count += 1
     
