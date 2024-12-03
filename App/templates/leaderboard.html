@@ -122,7 +122,7 @@
                     {% for ranking in leaderboard %}
                     <tr style="color: white;">
                         <td><center>{{ranking.rank}}</center></td>
-                        <td><center><a style= "color: white;" href="#">{{ranking.student.username}}</a></center></td>
+                        <td><center><a style= "color: white;" href="{{url_for('index_views.student_profile_by_name', name=ranking.student.username)}}">{{ranking.student.username}}</a></center></td>
                         <td><center>{{'%0.2f' % ranking.points}}</center></td> 
                     </tr>
                     {% endfor %}
