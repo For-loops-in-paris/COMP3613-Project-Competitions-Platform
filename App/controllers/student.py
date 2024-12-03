@@ -85,46 +85,6 @@ def display_notifications(username):
     else:
         return {"notifications":[notification.to_Dict() for notification in student.notifications]}
 
-def update_rankings():
-    students = get_all_students()
-    
-    students.sort(key=lambda x: (x.rating_score, x.comp_count), reverse=True)
-
-    leaderboard = []
-    count = 1
-    
-    curr_high = students[0].rating_score
-    curr_rank = 1
-
-    
-    for student in students:
-        if student.rank_decay<3:
-            student.rank_decay+=1
-
-        if curr_high != student.rating_score:
-            curr_rank = count
-            curr_high = student.rating_score
-
-        if student.comp_count != 0:
-            leaderboard.append({"placement": curr_rank, "student": student.username, "rating score":student.rating_score})
-            ranking = Ranking(student.id,Leaderboard.query.count(),count,student.rating_score)
-            count += 1
-        
-            
-        
-            notification = Notification(student.id, create_notification(student.comp_count,student.curr_rank,curr_rank))
-            student.curr_rank = curr_rank
-            try:
-                db.session.add(student)
-                db.session.add(notification)
-                db.session.add(ranking)
-                db.session.commit()
-            except Exception as e:
-                db.session.rollback()
-
-    return leaderboard
-
-
 def create_notification(comp_count,current_rank,rank):
     message = f'RANK : {rank}. '
     if comp_count == 1:
