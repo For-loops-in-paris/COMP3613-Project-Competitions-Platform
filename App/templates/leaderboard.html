@@ -18,6 +18,7 @@
     .dropdown-content{
         background-color: black;
         width: max-content !important;
+        max-height: 300px;
         height:auto !important;
     }
 
@@ -104,7 +105,7 @@
                     </ul>
                 </div> 
                 <ul id="dropdown" class="dropdown-content">
-                    {% for num in range(num_leaderboard) %}
+                    {% for num in range(num_leaderboard) | reverse %}
                     <li><a style = "color: white;" href="{{ url_for('index_views.leaderboard_page', leaderboard_id=num+1 ) }}">Leaderboard on: {{ all_leaderboards[num].date.strftime("%d %b %Y") }} </a></li>
                     {% endfor %}
                 </ul>
@@ -122,7 +123,7 @@
                     {% for ranking in leaderboard %}
                     <tr style="color: white;">
                         <td><center>{{ranking.rank}}</center></td>
-                        <td><center><a style= "color: white;" href="{{url_for('index_views.student_profile_by_name', name=ranking.student.username)}}">{{ranking.student.username}}</a></center></td>
+                        <td><center><a style= "color: white;" href="{{url_for('index_views.student_profile_by_name', name=ranking.student.username)}}">{{ranking.student.username }}{% if ranking.student.rank_decay==3 %} &nbsp <i class="tiny material-icons">report_problem</i>{% endif %}</a></center></td>
                         <td><center>{{'%0.2f' % ranking.points}}</center></td> 
                     </tr>
                     {% endfor %}
