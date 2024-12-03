@@ -150,20 +150,35 @@ def add_competition_results(comp_name):
         
     #if request.method == 'POST':
     data = request.form
-    
-    students = [data['student1'], data['student2'], data['student3']]
-    response = add_team(moderator.username, comp_name, data['team_name'], students)
+    entered_score = int(data['score'])
+    comp_score = int(competition.max_score)
+    if entered_score > competition.max_score:
+        flash('Team Score exceeds the maximum score: ' + str(comp_score) + '!  Please try again', 'error')
+        return redirect(url_for('comp_views.add_results_page', comp_id=competition.id))
+    elif entered_score < 0:
+        flash('Team Score cannot be negative! Please try again', 'error')
+        return redirect(url_for('comp_views.add_results_page', comp_id=competition.id))
+    else:
+        students = [data['student1'], data['student2'], data['student3']]
+        comp_teams = competition.teams
+        for student in students:
+            for team in comp_teams:
+                if team.name == data['team_name']:
+                    flash('Team name: ' + team.name + ' already taken for this competition! Please try another', 'error')
+                    return redirect(url_for('comp_views.add_results_page', comp_id=competition.id))
+                for team_student in team.students:
+                    if team_student.username == student:
+                        flash(student + ' already registered for ' + team.name + '! Please try again', 'error')
+                        return redirect(url_for('comp_views.add_results_page', comp_id=competition.id))
 
-    if response:
-        response = add_results(moderator.username, comp_name, data['team_name'], int(data['score']))
-    #response = add_results(data['mod_name'], data['comp_name'], data['team_name'], int(data['score']))
-    #if response:
-    #    return (jsonify({'message': "Results added successfully!"}),201)
-    #return (jsonify({'error': "Error adding results!"}),500)
-    
-    leaderboard = display_competition_results(comp_name)
+        response = add_team(moderator.username, comp_name, data['team_name'], students)
 
-    return render_template('competition_details.html', competition=competition, moderator=moderator, leaderboard=leaderboard, user=current_user)
+        if response:
+            response = add_results(moderator.username, comp_name, data['team_name'], int(data['score']))
+        
+        leaderboard = display_competition_results(comp_name)
+        flash('Results added successfully!', 'success')
+        return render_template('competition_details.html', competition=competition, moderator=moderator, leaderboard=leaderboard, user=current_user)
     
 @comp_views.route('/confirm_results/<string:comp_name>', methods=['GET', 'POST'])
 def confirm_results(comp_name):

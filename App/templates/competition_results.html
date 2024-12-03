@@ -5,9 +5,30 @@
 {{ super() }}
 
 {% block content %}
+<style>
+    .success {
+        color: white;
+        font-size: 9em;
+        text-decoration: underline;
+    }
+    .error {
+        color: white;
+        font-size: .9em;
+        text-decoration: underline;
+    }
+</style>
 <center><h2 style="color: white;">Competition Results</h2></center>
 
 <main class="container" style="padding: 15px; background-color: black; border-radius: 25px;">
+    <div id="flashmessage" class="flashmessage">
+        {% for category, message in get_flashed_messages(with_categories=true) %}
+          <div class="alert {{ category }}" role="alert">
+            <span class="message">{{ message }}</span>
+            <button type="button" class="close" onclick="closeFlash()">×</button>
+          </div>
+        {% endfor %}
+    </div>
+
     <form name="addForm" class="card" method="POST" action="{{ url_for('comp_views.add_competition_results', comp_name=competition.name) }}" style="background-color: black; font-family: helvetica;">
         <div class="card-content">
             <span style="color: white; font-family: optima;" class="card-title">Enter competition results</span>
