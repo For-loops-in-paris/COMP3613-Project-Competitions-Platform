@@ -19,7 +19,7 @@ class Student(User):
         self.rating_score = 0
         self.comp_count = 0
         self.curr_rank = 0
-        self.decay=0
+        self.rank_decay=0
         self.teams = []
         self.notifications = []
 

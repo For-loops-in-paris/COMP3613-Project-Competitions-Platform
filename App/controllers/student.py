@@ -101,6 +101,8 @@ def update_rankings():
     db.session.commit()
     
     for student in students:
+        if student.rank_decay<3:
+            student.rank_decay+=1
 
         if curr_high != student.rating_score:
             curr_rank = count
