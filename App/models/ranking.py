@@ -23,3 +23,7 @@ class Ranking(db.Model):
     
     def __repr__(self):
         return f"User: {self.user_id} Rank: {self.rank}"
+    
+    def search_ranking(self, page, leaderboard):
+        matching_ranks = Ranking.query.filter_by(leaderboard_id = leaderboard)
+        return matching_ranks.paginate(page=page, per_page=20)

@@ -8,6 +8,19 @@
 
 <style>
 
+    .alertwarning#button {
+        background-color: white;
+        border-radius: 10px;
+    }
+    .success {
+        color: white;
+        font-size: 1em;
+    }
+    .error {
+        color: white;
+        font-size: .9em;
+        text-decoration: underline;
+    }
     .tables-container {
         display: flex;
         justify-content: space-between;
@@ -52,6 +65,13 @@
 <div class="container">
     <div class="tables-container">
         <div class="leaderboard-table">
+            <!-- for displaying the flashed messages -->
+            <div id = "flashmessage" class = "flashmessage">
+                {% for category, message in get_flashed_messages(with_categories=true) %}
+                    <button onclick="closeFlash()">X</button>
+                    <div class = "{{category}}">{{ message }}</div>
+                {% endfor %}
+            </div>
             <center>
                 <h2 style="color: white; background-color: black; border-radius: 15px;">Leaderboard</h2>
             </center>
@@ -64,16 +84,49 @@
                     </tr>
                 </thead>
                 <tbody>
-                    {% for student in leaderboard[:20] %}
+                    {% for ranking in leaderboard %}
                     <tr style="color: white;">
-                        <td><center>{{student['placement']}}</center></td>
-                        <td><center><a style= "color: white;" href="{{url_for('index_views.student_profile_by_name', name=student['student'])}}">{{ student['student']}}</a></center></td>
-                        <td><center>{{'%0.2f' % student['rating score']|float}}</center></td>
+                        <td><center>{{ranking.rank}}</center></td>
+                        <td><center><a style= "color: white;" href="#">{{ranking.student.username}}</a></center></td>
+                        <td><center>{{'%0.2f' % ranking.points}}</center></td> 
                     </tr>
                     {% endfor %}
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class = "row">
+        <ul class="pagination col s12 center">
+            {% if leaderboard.prev_num %}
+            <li class="waves-effect">
+                <a href="{{ url_for('index_views.leaderboard_page', leaderboard_id=leaderboard_id, page=prev_num) }}"><i class="material-icons">chevron_left</i></a>
+            </li>
+            {% else %}
+            <li class="disabled">
+                <a href="#!"><i class="material-icons">chevron_left</i></a>
+            </li>
+            {% endif %}
+            {% for page_num in leaderboard.iter_pages() %}
+                {% if page_num %}
+                    {% if leaderboard.page == page_num %}
+                    <li class="active blue"><a href="#!">{{ page_num }}</a></li>
+                    {% else %}
+                    <li class="waves-effect"><a href="{{ url_for('index_views.leaderboard_page', leaderboard_id=leaderboard_id, page=page_num) }}">{{ page_num }}</a></li>
+                    {% endif %}
+                {% else %}
+                    <li class="disabled"><a href="#!">...</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if leaderboard.has_next %}
+                <li class="waves-effect">
+                    <a href="{{ url_for('index_views.leaderboard_page', leaderboard_id=leaderboard_id, page=leaderboard.next_num) }}"><i class="material-icons">chevron_right</i></a>
+                </li>
+            {% else %}
+                <li class="disabled">
+                    <a href="#!"><i class="material-icons">chevron_right</i></a>
+                </li>
+            {% endif %}
+        </ul>
     </div>
 </div>
 <div style="padding: 20px;"></div>
