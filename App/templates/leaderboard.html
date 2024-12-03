@@ -123,7 +123,7 @@
                     {% for ranking in leaderboard %}
                     <tr style="color: white;">
                         <td><center>{{ranking.rank}}</center></td>
-                        <td><center><a style= "color: white;" href="{{url_for('index_views.student_profile_by_name', name=ranking.student.username)}}">{{ranking.student.username }}{% if ranking.student.rank_decay==3 %}<i class="tiny material-icons">report_problem</i>{% endif %}</a></center></td>
+                        <td><center><a style= "color: white;" href="{{url_for('index_views.student_profile_by_name', name=ranking.student.username)}}">{{ranking.student.username }}{% if ranking.student.rank_decay==3 %} &nbsp <i class="tiny material-icons">report_problem</i>{% endif %}</a></center></td>
                         <td><center>{{'%0.2f' % ranking.points}}</center></td> 
                     </tr>
                     {% endfor %}
