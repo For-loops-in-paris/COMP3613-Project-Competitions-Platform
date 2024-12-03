@@ -9,7 +9,10 @@ index_views = Blueprint('index_views', __name__, template_folder='../templates')
 
 @index_views.route('/', methods=['GET'])
 def home_page():
-    return render_template('leaderboard.html', leaderboard=display_rankings(), user=current_user)
+    page = request.args.get('page', 1, type=int)
+    leaderboard = Ranking.search_ranking(Ranking, page,  Leaderboard.query.count())
+
+    return render_template('leaderboard.html', leaderboard=leaderboard, user=current_user, leaderboard_id= Leaderboard.query.count(), all_leaderboards=Leaderboard.query.all(), num_leaderboard=Leaderboard.query.count())
 
 @index_views.route('/leaderboard/<int:leaderboard_id>', methods=['GET'])
 def leaderboard_page(leaderboard_id = 0):
