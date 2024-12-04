@@ -1,6 +1,6 @@
 from flask_login import login_user, login_manager, logout_user, LoginManager, current_user
 from flask_jwt_extended import create_access_token, jwt_required, JWTManager, get_jwt_identity
-from flask import redirect, flash, request
+from flask import redirect, flash, url_for
 from functools import wraps
 
 from App.models import User, Student, Moderator
@@ -49,7 +49,7 @@ def moderator_required(func):
     def wrapper(*args, **kwargs):
         if not current_user.is_authenticated or not isinstance(current_user, Moderator):
             flash("Moderator role required")
-            return redirect(request.referrer)
+            return redirect(url_for("index_views.home_page"))
         return func(*args, **kwargs)
     return wrapper
 
