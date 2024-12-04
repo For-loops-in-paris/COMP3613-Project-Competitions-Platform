@@ -124,6 +124,13 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       competition = Competition("RunTime", datetime.strptime("09-02-2024", "%d-%m-%Y"), "St. Augustine", 1, 25)
       self.assertDictEqual(competition.get_json(), {"id": None, "name": "RunTime", "date": "09-02-2024", "location": "St. Augustine", "level": 1, "max_score": 25, "moderators": [], "teams": []})
+      
+    def test_competition_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      competition = Competition("RunTime", datetime.strptime("09-02-2024", "%d-%m-%Y"), "St. Augustine", 1, 25)
+      expected_date = datetime.strptime("09-02-2024", "%d-%m-%Y")
+      self.assertDictEqual(competition.toDict(), {"ID": None, "Name": "RunTime", "Date": expected_date, "Location": "St. Augustine", "Level": 1, "Max Score": 25, "Moderators": [], "Teams": []})
     
     #Notification Unit Tests
     def test_new_notification(self):
