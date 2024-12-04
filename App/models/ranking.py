@@ -7,6 +7,8 @@ class Ranking(db.Model):
     leaderboard_id =  db.Column(db.Integer, db.ForeignKey('leaderboard.id'), nullable=False)
     rank = db.Column(db.Integer,nullable=False)
     points = db.Column(db.Float,nullable=False)
+    decaying = db.Column(db.Boolean, nullable=False)
+
 
     def get_json(self):
         return {
@@ -15,11 +17,12 @@ class Ranking(db.Model):
 
         }
     
-    def __init__(self,user_id,leaderboard_id,rank,points):
+    def __init__(self,user_id,leaderboard_id,rank,points,decaying):
         self.user_id = user_id
         self.leaderboard_id = leaderboard_id
         self.rank=rank
         self.points=points
+        self.decaying=decaying
     
     def __repr__(self):
         return f"User: {self.user_id} Rank: {self.rank}"

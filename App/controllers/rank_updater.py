@@ -50,8 +50,12 @@ def update_rankings():
             student.rank_decay+=1
 
         if student.comp_count != 0:
-            ranking = Ranking(student.id,Leaderboard.query.count(),count,student.rating_score)
+            decaying=False
+            if student.rank_decay==3:
+                decaying=True
+            ranking = Ranking(student.id,Leaderboard.query.count(),count,student.rating_score,decaying)
             count += 1
+            
     
             notification = Notification(student.id, create_notification(student.comp_count,student.curr_rank,curr_rank))
             student.update_ranking(curr_rank)
