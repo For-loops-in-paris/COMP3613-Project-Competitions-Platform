@@ -12,9 +12,12 @@ class Ranking(db.Model):
 
     def get_json(self):
         return {
-            "comp_id": self.comp_id,
-            "leaderboard_id":self.leaderboard_id
-
+            "id":self.id,
+            "user_id": self.user_id,
+            "leaderboard_id":self.leaderboard_id,
+            "rank":self.rank,
+            "points":self.points,
+            "decaying":self.decaying
         }
     
     def __init__(self,user_id,leaderboard_id,rank,points,decaying):
