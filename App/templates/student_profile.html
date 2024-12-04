@@ -11,6 +11,11 @@ body {
     overflow-y: scroll;
 }
 
+.detail:hover {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .notifications {
     border: 5px solid #ccc; 
     padding: 10px; 
@@ -297,7 +302,7 @@ h1 {
                             <p style="margin: 2vw;">{{competition}}</p>
                         </div>
                         <div style="width: 10%; text-align: right; margin: 2vw;">
-                            <a style="color: white; text-decoration: underline;" href="{{url_for('comp_views.competition_details_by_name', name=competition)}}">Details</a>
+                            <a class="detail"style="color: white;" href="{{url_for('comp_views.competition_details_by_name', name=competition)}}">Details</a>
                         </div>
                     </li>
                 {% endfor %}
