@@ -144,6 +144,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       notification = Notification(1, "Ranking changed!")
       self.assertDictEqual(notification.get_json(), {"id": None, "student_id": 1, "notification": "Ranking changed!"})
+      
+    def test_notification_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      notification = Notification(1, "Ranking changed!")
+      self.assertDictEqual(notification.to_Dict(), {"ID": None, "Notification": "Ranking changed!"})
     """
     #Ranking Unit Tests
     def test_new_ranking(self):
