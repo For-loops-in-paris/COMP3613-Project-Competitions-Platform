@@ -105,6 +105,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       team = Team("Scrum Lords")
       self.assertDictEqual(team.get_json(), {"id":None, "name":"Scrum Lords", "students": []})
+      
+    def test_team_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      team = Team("Scrum Lords")
+      self.assertDictEqual(team.to_Dict(), {"ID": None, "Name": "Scrum Lords", "Students": []})
     
     #Competition Unit Tests
     def test_new_competition(self):

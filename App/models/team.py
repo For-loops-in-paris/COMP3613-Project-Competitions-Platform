@@ -42,5 +42,5 @@ class Team(db.Model):
         return {
             "ID" : self.id,
             "Name" : self.name,
-            "Students" : [student.username for student in self.student]
+            "Students" : [student.username for student in self.students]
         }
