@@ -2,6 +2,7 @@ from App.database import db
 from App.models import  RankUpdater, CompetitionTeam, Leaderboard, Team, Notification, Ranking
 from App.controllers import get_decayed_students, get_competition_by_name,get_moderator_by_username, create_notification, isValid
 
+
 def update_leaderboard(mod_name,comp_name):
     if update_ratings(mod_name, comp_name):
         apply_decay()
@@ -11,7 +12,8 @@ def update_leaderboard(mod_name,comp_name):
 def apply_decay():
     students = get_decayed_students()
     for student in students:
-        student.rating_score-=0.5
+        if student.rating_score > 1:
+            student.rating_score-=0.5
 
 def update_ratings(mod_name, comp_name):
     mod = get_moderator_by_username(mod_name)

@@ -28,6 +28,7 @@ def add_new_comp():
 #create new comp
 @comp_views.route('/createcompetition', methods=['POST'])
 @login_required
+@moderator_required
 def create_comp():
     data = request.form
     
@@ -61,6 +62,7 @@ def create_comp():
 
 #page to create new comp
 @comp_views.route('/createcompetition', methods=['GET'])
+@moderator_required
 def create_comp_page():
     return render_template('competition_creation.html', user=current_user)
 
@@ -143,6 +145,7 @@ def get_results(id):
 """
 #page to comp upload comp results
 @comp_views.route('/add_results/<int:comp_id>', methods=['GET'])
+@moderator_required
 def add_results_page(comp_id):
     competition = get_competition(comp_id)
     if session['user_type'] == 'moderator':
@@ -155,6 +158,7 @@ def add_results_page(comp_id):
     return render_template('competition_results.html', competition=competition, moderator=moderator, leaderboard=leaderboard, user=current_user)
 
 @comp_views.route('/add_results/<string:comp_name>', methods=['POST'])
+@moderator_required
 def add_competition_results(comp_name):
     competition = get_competition_by_name(comp_name)
     if session['user_type'] == 'moderator':
@@ -195,6 +199,8 @@ def add_competition_results(comp_name):
         return render_template('competition_details.html', competition=competition, moderator=moderator, leaderboard=leaderboard, user=current_user)
     
 @comp_views.route('/confirm_results/<string:comp_name>', methods=['GET', 'POST'])
+@login_required
+@moderator_required
 def confirm_results(comp_name):
     if session['user_type'] == 'moderator':
         moderator = Moderator.query.filter_by(id=current_user.id).first()

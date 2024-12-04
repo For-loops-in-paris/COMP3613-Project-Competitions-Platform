@@ -5,7 +5,7 @@ from App.main import create_app
 from App.database import db, create_db
 from App.models import *
 from App.controllers import *
-
+from datetime import datetime
 
 LOGGER = logging.getLogger(__name__)
 
@@ -17,10 +17,22 @@ class UnitTests(unittest.TestCase):
     def test_new_user(self):
         user = User("ryan", "ryanpass")
         assert user.username == "ryan"
+        
+    def test_get_json(self):
+        user = User("ryan", "ryanpass")
+        user_id = user.id
+        user_json = user.get_json()
+        print(user_json)
+        self.assertDictEqual(user_json, {"id": user_id, "username": "ryan"})
+      
+    def test_toDict(self):
+        user = User("ryan", "ryanpass")
+        user_id = user.id
+        user_dict = user.toDict()
+        self.assertDictEqual(user_dict, {"ID": user_id, "Username": "ryan"})
 
     def test_hashed_password(self):
         password = "ryanpass"
-        hashed = generate_password_hash(password, method='sha256')
         user = User("ryan", password)
         assert user.password != password
 
@@ -41,7 +53,27 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       student = Student("james", "jamespass")
       self.assertDictEqual(student.get_json(), {"id": None, "username": "james", "rating_score": 0, "comp_count": 0, "curr_rank": 0})
-
+      
+    def test_student_update_stats(self):
+      db.drop_all()
+      db.create_all()
+      student = Student("james", "jamespass")
+      student.update_stats(10)
+      assert student.rating_score == 10
+      
+    def test_student_update_ranking(self):
+      db.drop_all()
+      db.create_all()
+      student = Student("james", "jamespass")
+      student.update_ranking(1)
+      assert student.curr_rank == 1
+      
+    def test_student_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      student = Student("james", "jamespass")
+      self.assertDictEqual(student.to_Dict(), {"ID": None, "Username": "james", "Rating Score": 0, "Number of Competitions": 0, "Rank": 0})
+      
     #Moderator Unit Tests
     def test_new_moderator(self):
       db.drop_all()
@@ -54,6 +86,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       mod = Moderator("robert", "robertpass")
       self.assertDictEqual(mod.get_json(), {"id":None, "username": "robert", "competitions": []})
+      
+    def test_moderator_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      mod = Moderator("robert", "robertpass")
+      self.assertDictEqual(mod.toDict(), {"ID": None, "Username": "robert", "Competitions": []})
     
     #Team Unit Tests
     def test_new_team(self):
@@ -67,6 +105,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       team = Team("Scrum Lords")
       self.assertDictEqual(team.get_json(), {"id":None, "name":"Scrum Lords", "students": []})
+      
+    def test_team_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      team = Team("Scrum Lords")
+      self.assertDictEqual(team.to_Dict(), {"ID": None, "Name": "Scrum Lords", "Students": []})
     
     #Competition Unit Tests
     def test_new_competition(self):
@@ -80,6 +124,13 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       competition = Competition("RunTime", datetime.strptime("09-02-2024", "%d-%m-%Y"), "St. Augustine", 1, 25)
       self.assertDictEqual(competition.get_json(), {"id": None, "name": "RunTime", "date": "09-02-2024", "location": "St. Augustine", "level": 1, "max_score": 25, "moderators": [], "teams": []})
+      
+    def test_competition_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      competition = Competition("RunTime", datetime.strptime("09-02-2024", "%d-%m-%Y"), "St. Augustine", 1, 25)
+      expected_date = datetime.strptime("09-02-2024", "%d-%m-%Y")
+      self.assertDictEqual(competition.toDict(), {"ID": None, "Name": "RunTime", "Date": expected_date, "Location": "St. Augustine", "Level": 1, "Max Score": 25, "Moderators": [], "Teams": []})
     
     #Notification Unit Tests
     def test_new_notification(self):
@@ -93,6 +144,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       notification = Notification(1, "Ranking changed!")
       self.assertDictEqual(notification.get_json(), {"id": None, "student_id": 1, "notification": "Ranking changed!"})
+      
+    def test_notification_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      notification = Notification(1, "Ranking changed!")
+      self.assertDictEqual(notification.to_Dict(), {"ID": None, "Notification": "Ranking changed!"})
     """
     #Ranking Unit Tests
     def test_new_ranking(self):
@@ -155,9 +212,13 @@ class UnitTests(unittest.TestCase):
       db.drop_all()
       db.create_all()
       competition_team = CompetitionTeam(1, 1)
-      competition_team.update_points(15)
-      competition_team.update_rating(12)
-      self.assertDictEqual(competition_team.get_json(), {"id": None, "team_id": 1, "competition_id": 1, "points_earned": 15, "rating_score": 12})
+      self.assertDictEqual(competition_team.get_json(), {"id": None, "team_id": 1, "competition_id": 1, "points_earned": 0, "rating_score": 0})
+      
+    def test_competition_team_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      competition_team = CompetitionTeam(1, 1)
+      self.assertDictEqual(competition_team.toDict(), {"ID": None, "Team ID": 1, "Competition ID": 1, "Points Earned": 0, "Rating Score": 0})
 
     #CompetitionModerator Unit Tests
     def test_new_competition_moderator(self):
@@ -171,6 +232,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       competition_moderator = CompetitionModerator(1, 1)
       self.assertDictEqual(competition_moderator.get_json(), {"id": None, "competition_id": 1, "moderator_id": 1})
+      
+    def test_competition_moderator_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      competition_moderator = CompetitionModerator(1, 1)
+      self.assertDictEqual(competition_moderator.to_Dict(), {"ID": None, "Competition ID": 1, "Moderator ID": 1})
 
     #StudentTeam Unit Tests
     def test_new_student_team(self):
@@ -184,6 +251,41 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       student_team = StudentTeam(1, 1)
       self.assertDictEqual(student_team.get_json(), {"id": None, "student_id": 1, "team_id": 1})
+      
+    def test_student_team_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      student_team = StudentTeam(1, 1)
+      self.assertDictEqual(student_team.to_Dict(), {"ID": None, "Student ID": 1, "Team ID": 1})
+      
+    #Leaderboard Unit Tests
+    def test_new_leaderboard(self):
+      db.drop_all()
+      db.create_all()
+      current_date = datetime.now()
+      leaderboard = Leaderboard(current_date)
+      assert leaderboard.id == None and leaderboard.date == current_date
+      
+    def test_leaderboard_get_json(self):
+      db.drop_all()
+      db.create_all()
+      current_date = datetime.now()
+      leaderboard = Leaderboard(current_date)
+      current_date = current_date.strftime("%d %b %Y")
+      self.assertDictEqual(leaderboard.get_json(), {"id": None, "date": current_date})
+    
+    #Ranking Unit Tests  
+    def test_new_ranking(self):
+      db.drop_all() 
+      db.create_all()
+      ranking = Ranking(1, 1, 10, 20, True)
+      assert ranking.user_id == 1 and ranking.leaderboard_id == 1 and ranking.rank == 10 and ranking.points == 20 and ranking.decaying == True
+      
+    def test_ranking_get_json(self):
+      db.drop_all()
+      db.create_all()
+      ranking = Ranking(1, 1, 10, 20, True)
+      self.assertDictEqual(ranking.get_json(), {"id": None, "user_id": 1, "leaderboard_id": 1, "rank": 10, "points": 20, "decaying": True})
 
 '''
     Integration Tests

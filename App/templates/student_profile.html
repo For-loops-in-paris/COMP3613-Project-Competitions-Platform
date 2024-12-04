@@ -7,6 +7,15 @@
 {% block content %}
 
 <style>
+body {
+    overflow-y: scroll;
+}
+
+.detail:hover {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .notifications {
     border: 5px solid #ccc; 
     padding: 10px; 
@@ -40,7 +49,8 @@ h1 {
 
 .student-info {
     border-radius: 25px;
-    width: 30%;
+    width: 25%;
+    height: max-content;
     outline-style: solid;
     background-color: black;
     /*background-image: linear-gradient(#61677A, #000000);
@@ -95,15 +105,16 @@ h1 {
 }
 
 .competition-list {
+    border-radius: 30px;
     width: 95%;
     margin: auto;
     margin-top: 1.5vw;
     outline-style: solid;
     font-size: 2vw;
-    overflow-y: scroll;
-    height: 20vw;
     color: white;
     background-color: black;
+    padding-bottom: 10px;
+    padding-top: 1px;
     /*background-image: radial-gradient(#61677A, #000000);*/
 }
 
@@ -137,6 +148,7 @@ h1 {
     margin-left: auto;
     margin-top: 2vw;
     margin-right: 2vw;
+    cursor: pointer;
 }
 
 .mail-icon {
@@ -291,7 +303,7 @@ h1 {
                             <p style="margin: 2vw;">{{competition}}</p>
                         </div>
                         <div style="width: 10%; text-align: right; margin: 2vw;">
-                            <a style="color: white; text-decoration: underline;" href="{{url_for('comp_views.competition_details_by_name', name=competition)}}">Details</a>
+                            <a class="detail"style="color: white;" href="{{url_for('comp_views.competition_details_by_name', name=competition)}}">Details</a>
                         </div>
                     </li>
                 {% endfor %}

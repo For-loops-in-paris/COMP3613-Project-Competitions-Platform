@@ -11,6 +11,10 @@
         margin-top: 20px;
     }
 
+    .container a:hover {
+        text-decoration: underline;
+        font-weight: bold;
+    }
     .card {
         border: 1px solid #ccc;
         border-radius: 5px;
@@ -43,7 +47,7 @@
 </style>
 <div style="display: flex;">
     <div>
-        <center><h2 style="margin-left: 50px; color: white;">Competition Details</h2></center>
+        <center><h2 style="margin-left: 50px; color: white; margin: 20px;">Competition Details</h2></center>
     </div>
     <div>
         {% if session['user_type'] == 'moderator' and moderator in competition.moderators and not competition.confirm %}
