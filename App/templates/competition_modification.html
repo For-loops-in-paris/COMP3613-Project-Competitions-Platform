@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block title %}Competition Creation{% endblock %}
+{% block page %}UWI Competitions Platform{% endblock %}
+
+{{ super() }}
+
+{% block content %}
+<style>
+  .success {
+      color: white;
+      font-size: 9em;
+      text-decoration: underline;
+  }
+  .error {
+      color: white;
+      font-size: .9em;
+      text-decoration: underline;
+  }
+</style>
+<center>
+  <h2 style="color: white;">Competition Registration</h2>
+</center>
+
+<main class="container" style="padding: 15px; background-color: black; border-radius: 25px;">
+  <div id="flashmessage" class="flashmessage">
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div class="alert {{ category }}" role="alert">
+        <span class="message">{{ message }}</span>
+        <button type="button" class="close" onclick="closeFlash()">×</button>
+      </div>
+    {% endfor %}
+  </div>
+  <form name="addForm" class="card" method="POST" action="/editcompetition/{{competition.id}}" style="background-color: black; color: white;">
+    <div class="card-content" style="font-family: helvetica;">
+      <span class="card-title" style="font-family: optima;">Edit Competition</span>
+        <div class="input-field">
+          <input style="color: white;" type="text" name="name" placeholder="Enter Comp Name" value = "{{competition.name}}" class="materialize-textarea" required>
+          <label for="name">Competition Name</label>
+        </div>
+        <div class="input-field">
+          <input style="color: white;" type="date" name="date" value = "{{competition.date}}" style="color: white;" required>
+          <label for="date">Competition Date</label>
+        </div>
+        <div class="input-field">
+            <input style="color: white;" type="text" name="location" placeholder="Enter Comp Location"  value = "{{competition.location}}"class="materialize-textarea" required>
+            <label for="location">Competition Location</label>
+        </div>
+        <div class="input-field">
+            <input style="color: white;" type="number" name="level" placeholder="Enter Comp Level" min="1" max="5" value = "{{competition.level}}">
+            <label for="level">Competition Level</label>
+        </div>
+        <div class="input-field">
+            <input style="color: white;" type="text" name="max_score" placeholder="Enter Max Value" value = "{{competition.max_score}}" class="materialize-textarea" required>
+            <label for="max_score">Competition Max Value</label>
+          </div>
+
+    </div>
+    <div class="card-actions">
+        <div class="row">
+          <div class="col s12">
+            <input style="background-color: #343A40; border-radius: 25px;" type="submit" class="btn right" value="Edit Competition">
+          </div>
+        </div>
+    </div>
+  </form>
+</main>
+
+{% endblock %}
