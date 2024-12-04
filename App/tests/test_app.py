@@ -86,6 +86,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       mod = Moderator("robert", "robertpass")
       self.assertDictEqual(mod.get_json(), {"id":None, "username": "robert", "competitions": []})
+      
+    def test_moderator_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      mod = Moderator("robert", "robertpass")
+      self.assertDictEqual(mod.toDict(), {"ID": None, "Username": "robert", "Competitions": []})
     
     #Team Unit Tests
     def test_new_team(self):
