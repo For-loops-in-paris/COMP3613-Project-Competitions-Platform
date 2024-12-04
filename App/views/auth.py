@@ -85,33 +85,34 @@ def login():
             if request.form['username'] == student.username and student.check_password(request.form['password']):
                 login_user(student)
                 session['user_type'] = 'student'
-                #flash("Login successful!", category='success')
-                return render_template('leaderboard.html', leaderboard=display_rankings(), user=current_user)
-            #else:
-            #flash("Invalid Credentials!", category='error')
-            #return render_template('login.html', user=current_user)
+                flash("Login successful!", category='success')
+                return redirect(url_for('index_views.leaderboard_page',leaderboard_id=0))
+            else:
+                flash("Invalid Credentials!", category='error')
+                return render_template('login.html', user=current_user)
         
-        if moderator:
+        elif moderator:
             if request.form['username'] == moderator.username and moderator.check_password(request.form['password']):
                 login_user(moderator)
                 session['user_type'] = 'moderator'
-                #flash("Login successful!", category='success')
-                return render_template('leaderboard.html', leaderboard=display_rankings(), user=current_user)
-            #else:
-            #flash("Invalid Credentials!", category='error')
-            #return render_template('login.html', user=current_user)
+                flash("Login successful!", category='success')
+                return redirect(url_for('index_views.leaderboard_page',leaderboard_id=0))
+            else:
+                flash("Invalid Credentials!", category='error')
+                return render_template('login.html', user=current_user)
     
-            #if not student and not moderator:
-            #flash("Username not found!", category='error')
-            #return render_template('404.html')
+        else:
+            flash("Username not found!", category='error')
+            return render_template('login.html',user=current_user)
     return render_template('login.html', user=current_user)
 
 @auth_views.route('/logout')
 @login_required
 def logout():
     logout_user()
+    flash("Logout successful!", category='success')
     session['user_type'] = None
-    return render_template('leaderboard.html', leaderboard=display_rankings(), user=current_user)
+    return redirect(url_for('index_views.leaderboard_page',leaderboard_id=0))
 
 @auth_views.route('/signup', methods=['GET', 'POST'])
 def signup():
@@ -125,6 +126,6 @@ def signup():
             #flash('Account created successfully!', category="success")
                 login_user(student)
                 session['user_type'] = 'student'
-                return render_template('leaderboard.html', leaderboard=display_rankings(), user=current_user)#, competitions=get_all_competitions())
+                return redirect(url_for('index_views.leaderboard_page',leaderboard_id=0))
     
     return render_template('signup.html', user=current_user)
