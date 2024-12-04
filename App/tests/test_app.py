@@ -405,3 +405,90 @@ class IntegrationTests(unittest.TestCase):
       expected_leaderboard = []
       assert leaderboard == expected_leaderboard
     
+    #Team Integration Tests:
+    def test13_create_team(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      assert team.name == "team1"
+    
+    def test14_get_team_by_name(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      returned_team = get_team_by_name("team1")
+      assert returned_team.name == team.name
+    
+    def test15_get_team_by_id(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      returned_team = get_team(team.id)
+      assert returned_team.name == team.name
+      
+    def test16_get_all_teams(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      all_teams = get_all_teams()
+      assert all_teams[0].name == team.name
+      
+    def test17_get_all_teams_json(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      all_teams_json = get_all_teams_json()
+      team_json = {
+            "id" : 1,
+            "name" : "team1",
+            "students" : ["billy", "rob"]
+      }
+      expected = [team_json]
+      self.assertListEqual(all_teams_json, expected)
+      
+    def test18_find_team(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      returned_team = find_team("team1", students)
+      assert returned_team == team
+    
+    def test19_add_team(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      added_team = add_team("lebron", "Code Wars", "team1", students)
+      assert added_team.comp_id == 1 and added_team.team_id == 1
+      
+    def test20_add_student(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy"]
+      team = create_team("team1", students)
+      added_student = team.add_student(student2)
+      assert added_student.team_id == 1 and added_student.student_id == 2
