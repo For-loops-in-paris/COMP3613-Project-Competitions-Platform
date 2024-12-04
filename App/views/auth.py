@@ -110,6 +110,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash("Logout successful!", category='success')
     session['user_type'] = None
     return redirect(url_for('index_views.leaderboard_page',leaderboard_id=0))
 

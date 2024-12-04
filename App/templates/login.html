@@ -11,6 +11,7 @@
     .success {
         color: white;
         font-size: 1em;
+        text-decoration: underline;
     }
     .error {
         color: white;
@@ -159,12 +160,13 @@
         Not a user? <a style="color: white; text-decoration: underline;" href="{{ url_for('auth_views.signup') }}" class="signup-link">Sign Up</a>
     </div>
     
-    <div id = "flashmessage" class = "flashmessage">
+    <div id="flashmessage" class="flashmessage">
         {% for category, message in get_flashed_messages(with_categories=true) %}
-            <button onclick="closeFlash()">X</button>
-            <div class = "{{category}}">{{ message }}</div>
+          <div class="alert {{ category }}" role="alert">
+            <span class="message">{{ message }}</span>
+            <button type="button" class="close" onclick="closeFlash()">×</button>
+          </div>
         {% endfor %}
-        </div>
     </div>
 </div>
  
