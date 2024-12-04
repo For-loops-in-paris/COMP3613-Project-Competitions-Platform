@@ -5,7 +5,7 @@ from App.main import create_app
 from App.database import db, create_db
 from App.models import *
 from App.controllers import *
-
+from datetime import datetime
 
 LOGGER = logging.getLogger(__name__)
 
@@ -257,6 +257,22 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       student_team = StudentTeam(1, 1)
       self.assertDictEqual(student_team.to_Dict(), {"ID": None, "Student ID": 1, "Team ID": 1})
+      
+    #Leaderboard Unit Tests
+    def test_new_leaderboard(self):
+      db.drop_all()
+      db.create_all()
+      current_date = datetime.now()
+      leaderboard = Leaderboard(current_date)
+      assert leaderboard.id == None and leaderboard.date == current_date
+      
+    def test_leaderboard_get_json(self):
+      db.drop_all()
+      db.create_all()
+      current_date = datetime.now()
+      leaderboard = Leaderboard(current_date)
+      current_date = current_date.strftime("%d %b %Y")
+      self.assertDictEqual(leaderboard.get_json(), {"id": None, "date": current_date})
 
 '''
     Integration Tests
