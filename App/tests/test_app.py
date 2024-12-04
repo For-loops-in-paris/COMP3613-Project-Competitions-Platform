@@ -251,6 +251,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       student_team = StudentTeam(1, 1)
       self.assertDictEqual(student_team.get_json(), {"id": None, "student_id": 1, "team_id": 1})
+      
+    def test_student_team_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      student_team = StudentTeam(1, 1)
+      self.assertDictEqual(student_team.to_Dict(), {"ID": None, "Student ID": 1, "Team ID": 1})
 
 '''
     Integration Tests
