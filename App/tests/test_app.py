@@ -53,7 +53,27 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       student = Student("james", "jamespass")
       self.assertDictEqual(student.get_json(), {"id": None, "username": "james", "rating_score": 0, "comp_count": 0, "curr_rank": 0})
-
+      
+    def test_student_update_stats(self):
+      db.drop_all()
+      db.create_all()
+      student = Student("james", "jamespass")
+      student.update_stats(10)
+      assert student.rating_score == 10
+      
+    def test_student_update_ranking(self):
+      db.drop_all()
+      db.create_all()
+      student = Student("james", "jamespass")
+      student.update_ranking(1)
+      assert student.curr_rank == 1
+      
+    def test_student_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      student = Student("james", "jamespass")
+      self.assertDictEqual(student.to_Dict(), {"ID": None, "Username": "james", "Rating Score": 0, "Number of Competitions": 0, "Rank": 0})
+      
     #Moderator Unit Tests
     def test_new_moderator(self):
       db.drop_all()
