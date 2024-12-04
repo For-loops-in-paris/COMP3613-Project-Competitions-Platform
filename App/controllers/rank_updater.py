@@ -4,7 +4,6 @@ from App.controllers import get_decayed_students, get_competition_by_name,get_mo
 
 
 def update_leaderboard(mod_name,comp_name):
-    decaying_students=get_decayed_students()
     if update_ratings(mod_name, comp_name):
         apply_decay()
         update_rankings()
