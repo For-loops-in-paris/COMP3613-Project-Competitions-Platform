@@ -232,6 +232,12 @@ class UnitTests(unittest.TestCase):
       db.create_all()
       competition_moderator = CompetitionModerator(1, 1)
       self.assertDictEqual(competition_moderator.get_json(), {"id": None, "competition_id": 1, "moderator_id": 1})
+      
+    def test_competition_moderator_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      competition_moderator = CompetitionModerator(1, 1)
+      self.assertDictEqual(competition_moderator.to_Dict(), {"ID": None, "Competition ID": 1, "Moderator ID": 1})
 
     #StudentTeam Unit Tests
     def test_new_student_team(self):
