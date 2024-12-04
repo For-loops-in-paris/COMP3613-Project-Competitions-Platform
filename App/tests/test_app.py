@@ -17,10 +17,22 @@ class UnitTests(unittest.TestCase):
     def test_new_user(self):
         user = User("ryan", "ryanpass")
         assert user.username == "ryan"
+        
+    def test_get_json(self):
+        user = User("ryan", "ryanpass")
+        user_id = user.id
+        user_json = user.get_json()
+        print(user_json)
+        self.assertDictEqual(user_json, {"id": user_id, "username": "ryan"})
+      
+    def test_toDict(self):
+        user = User("ryan", "ryanpass")
+        user_id = user.id
+        user_dict = user.toDict()
+        self.assertDictEqual(user_dict, {"ID": user_id, "Username": "ryan"})
 
     def test_hashed_password(self):
         password = "ryanpass"
-        hashed = generate_password_hash(password, method='sha256')
         user = User("ryan", password)
         assert user.password != password
 
