@@ -7,6 +7,10 @@
 {% block content %}
 
 <style>
+body {
+    overflow-y: scroll;
+}
+
 .notifications {
     border: 5px solid #ccc; 
     padding: 10px; 
@@ -40,7 +44,8 @@ h1 {
 
 .student-info {
     border-radius: 25px;
-    width: 30%;
+    width: 25%;
+    height: max-content;
     outline-style: solid;
     background-color: black;
     /*background-image: linear-gradient(#61677A, #000000);
@@ -95,15 +100,16 @@ h1 {
 }
 
 .competition-list {
+    border-radius: 30px;
     width: 95%;
     margin: auto;
     margin-top: 1.5vw;
     outline-style: solid;
     font-size: 2vw;
-    overflow-y: scroll;
-    height: 20vw;
     color: white;
     background-color: black;
+    padding-bottom: 10px;
+    padding-top: 1px;
     /*background-image: radial-gradient(#61677A, #000000);*/
 }
 

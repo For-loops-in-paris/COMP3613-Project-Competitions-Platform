@@ -18,7 +18,14 @@
         font-size: .9em;
         text-decoration: underline;
     }
-    .center{
+
+    .login-container {
+        display: flex; 
+        justify-content: center; 
+        align-content: center; 
+    }
+
+    .container{
         margin: 0;
         padding: 0;
         /* font-family: monstserrat; */
@@ -27,19 +34,23 @@
         overflow: hidden;
         position: absolute;
         top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        right: 50%;
+        transform: translate(50%, -50%); 
         width: 400px;
 
     }
 
-    .center h2{
+    .container .signup_link{
+        text-align: center;
+    }
+
+    .container h2{
         text-align: center;
         padding: 0 0 20px 0;
         /* border-bottom: 1px solid silver; */
     }
 
-    .center form {
+    .container form {
         padding: 0 40px;
         box-sizing: border-box;
     }
@@ -138,35 +149,37 @@
 
 </style>
 
-<div style="background-color: black; border-radius: 25px;" class="center">
-    <h2 style="color: white;">Login</h2>
-    
-    <form action="{{ url_for('auth_views.login') }}" method="post" style="font-family: helvetica;">
+<div class="login-container" >
+    <div style="background-color: black; border-radius: 25px;" class="container">
+        <h2 style="color: white;">Login</h2>
         
-        <div class="txt_field">
-            <input style="color: white;" type="text"  id="username" name="username" required>
-            <label style="color: white;" for="username">Username</label>
+        <form action="{{ url_for('auth_views.login') }}" method="post" style="font-family: helvetica;">
+            
+            <div class="txt_field">
+                <input style="color: white;" type="text"  id="username" name="username" required>
+                <label style="color: white;" for="username">Username</label>
+            </div>
+
+            <div class="txt_field">
+                <input type="password" style="color: white;" id="password" name="password" required>
+                <label style="color: white;" for="password">Password</label>
+            </div>
+
+            <input type="submit" class="btn black" value="Login">
+        </form>
+
+        <div style="color: white; margin: 25px;" class="signup_link">
+            Not a user? <a style="color: white; text-decoration: underline;" href="{{ url_for('auth_views.signup') }}" class="signup-link">Sign Up</a>
         </div>
-
-        <div class="txt_field">
-            <input type="password" style="color: white;" id="password" name="password" required>
-            <label style="color: white;" for="password">Password</label>
+        
+        <div id="flashmessage" class="flashmessage">
+            {% for category, message in get_flashed_messages(with_categories=true) %}
+            <div class="alert {{ category }}" role="alert">
+                <span class="message">{{ message }}</span>
+                <button type="button" class="close" onclick="closeFlash()">×</button>
+            </div>
+            {% endfor %}
         </div>
-
-        <input type="submit" class="btn black" value="Login">
-    </form>
-
-    <div style="color: white; margin: 25px;" class="signup_link">
-        Not a user? <a style="color: white; text-decoration: underline;" href="{{ url_for('auth_views.signup') }}" class="signup-link">Sign Up</a>
-    </div>
-    
-    <div id="flashmessage" class="flashmessage">
-        {% for category, message in get_flashed_messages(with_categories=true) %}
-          <div class="alert {{ category }}" role="alert">
-            <span class="message">{{ message }}</span>
-            <button type="button" class="close" onclick="closeFlash()">×</button>
-          </div>
-        {% endfor %}
     </div>
 </div>
  

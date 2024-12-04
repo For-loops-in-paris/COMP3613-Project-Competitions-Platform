@@ -8,7 +8,13 @@
 
 <style>
 
-    .center{
+    .login-container {
+        display: flex; 
+        justify-content: center; 
+        align-content: center; 
+    }
+    
+    .container{
         margin: 0;
         padding: 0;
         /* font-family: monstserrat; */
@@ -17,21 +23,25 @@
         overflow: hidden;
         position: absolute;
         top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
+        right: 50%; 
+        transform: translate(50%, -50%); 
         width: 400px;
 
     }
 
-    .center h2{
+    .container h2{
         text-align: center;
         padding: 0 0 20px 0;
         /* border-bottom: 1px solid silver; */
     }
 
-    .center form {
+    .container form {
         padding: 0 40px;
         box-sizing: border-box;
+    }
+
+    .container .login_link{
+        text-align: center;
     }
 
     form .txt_field{
@@ -127,27 +137,28 @@
     }
 
 </style>
-
-<div style="background-color: black; border-radius: 25px;" class="center">
-    <h2 style="color: white;">Sign Up</h2>
-    
-    <form action="{{ url_for('auth_views.signup') }}" method="post" style="font-family: helvetica;">
+<div class="login-container">
+    <div style="background-color: black; border-radius: 25px;" class="container">
+        <h2 style="color: white;">Sign Up</h2>
         
-        <div class="txt_field">
-            <input style="color: white;" type="text" id="username" name="username" required>
-            <label style="color: white;" for="username">Username</label>
-        </div>
+        <form action="{{ url_for('auth_views.signup') }}" method="post" style="font-family: helvetica;">
+            
+            <div class="txt_field">
+                <input style="color: white;" type="text" id="username" name="username" required>
+                <label style="color: white;" for="username">Username</label>
+            </div>
 
-        <div class="txt_field">
-            <input style="color: white;" type="password" id="password" name="password" required>
-            <label style="color: white;" for="password">Password</label>
-        </div>
+            <div class="txt_field">
+                <input style="color: white;" type="password" id="password" name="password" required>
+                <label style="color: white;" for="password">Password</label>
+            </div>
 
-        <input type="submit" class="btn black" value="Sign Up">
-    </form>
-    
-    <div style="color: white; margin: 25px;" class="login_link">
-        Already a user? <a style="color: white; text-decoration: underline;" href="{{ url_for('auth_views.login') }}" class="login-link">Log In</a>
+            <input type="submit" class="btn black" value="Sign Up">
+        </form>
+        
+        <div style="color: white; margin: 25px;" class="login_link">
+            Already a user? <a style="color: white; text-decoration: underline;" href="{{ url_for('auth_views.login') }}" class="login-link">Log In</a>
+        </div>
     </div>
 </div>
 

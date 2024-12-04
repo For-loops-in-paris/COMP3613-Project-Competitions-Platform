@@ -15,6 +15,49 @@
 
 <style>
 
+    .tooltip {
+        position: relative;
+        display: inline-block;
+    }
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 100px;
+        background-color: #555;
+        color: #fff;
+        text-align: center;
+        padding: 5px 0;
+        border-radius: 6px;
+
+        position: absolute;
+        z-index: 1;
+        top: -5px;
+        left: 40px;
+
+        opacity: 0;
+        transition: opacity 0.3s;
+    }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+    }
+
+    .tooltip .tooltiptext::after {
+        content: " ";
+        position: absolute;
+        top: 20%;
+        right: 100%; 
+        margin-top: -10px;
+        border-width: 10px;
+        border-style: solid;
+        border-color: transparent #555 transparent transparent;
+    }   
+
+    .dropdown-menu p{
+        margin-top: -10px;
+        font-size: 1.1em;
+    }
     .dropdown-content{
         background-color: black;
         width: max-content !important;
@@ -94,18 +137,26 @@
                 {% endfor %}
             </div>
             
-            <center>
-               
-                <div style= "background-color: black; border-radius: 15px;">
+            <center>    
+                <div class = "dropdown-menu" style= "background-color: black; border-radius: 15px;">
                     <ul>
-                    
                         <li>
                             <a class="dropdown-trigger" data-target="dropdown">
-                            <h2 style="color: white;">Leaderboard <i class="material-icons">arrow_drop_down</i></h2>
+                                <h2 style="color: white;">Leaderboard <i class="material-icons">arrow_drop_down</i></h2>
                             </a>
                         </li>
-                    
                     </ul>
+                    
+                    {% if leaderboard_id == num_leaderboard %}
+                    <p style=" color: white; ">
+                            Showing Most Recent Leaderboard
+                    </p>
+                    {% else %}
+                    <p style=" color: white; ">
+                        Showing Leaderboard {{ all_leaderboards[leaderboard_id-1].date.strftime("%d %b %Y") }}
+                    </p>
+                    {% endif %}
+                    
                 </div> 
                 <ul id="dropdown" class="dropdown-content">
                     {% for num in range(num_leaderboard) | reverse %}
@@ -126,7 +177,17 @@
                     {% for ranking in leaderboard %}
                     <tr style="color: white;">
                         <td><center>{{ranking.rank}}</center></td>
-                        <td><center><a style= "color: white;" href="{{url_for('index_views.student_profile_by_name', name=ranking.student.username)}}">{{ranking.student.username }}{% if ranking.decaying %} &nbsp <i class="tiny material-icons">report_problem</i>{% endif %}</a></center></td>
+                        <td>
+                            <center>
+                                <a style= "color: white;" href="{{url_for('index_views.student_profile_by_name', name=ranking.student.username)}}">{{ranking.student.username }}</a>
+                                    <div class = "tooltip">
+                                        {% if ranking.decaying %} &nbsp 
+                                            <span class = "tooltiptext">{{ ranking.student.username }}'s rating is decaying</span>
+                                            <i class="tiny material-icons">report_problem</i>
+                                        {% endif %}
+                                    </div>
+                            </center>
+                        </td>
                         <td><center>{{'%0.2f' % ranking.points}}</center></td> 
                     </tr>
                     {% endfor %}
