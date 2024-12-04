@@ -53,11 +53,11 @@ def update_rankings():
             if student.rank_decay==3:
                 decaying=True
             ranking = Ranking(student.id,Leaderboard.query.count(),curr_rank,student.rating_score,decaying)
-            curr_rank += 1
-            
+                
     
             notification = Notification(student.id, create_notification(student.comp_count,student.curr_rank,curr_rank))
             student.update_ranking(curr_rank)
+            curr_rank += 1
             try:
                 db.session.add(student)
                 db.session.add(notification)
