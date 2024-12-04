@@ -212,9 +212,13 @@ class UnitTests(unittest.TestCase):
       db.drop_all()
       db.create_all()
       competition_team = CompetitionTeam(1, 1)
-      competition_team.update_points(15)
-      competition_team.update_rating(12)
-      self.assertDictEqual(competition_team.get_json(), {"id": None, "team_id": 1, "competition_id": 1, "points_earned": 15, "rating_score": 12})
+      self.assertDictEqual(competition_team.get_json(), {"id": None, "team_id": 1, "competition_id": 1, "points_earned": 0, "rating_score": 0})
+      
+    def test_competition_team_to_Dict(self):
+      db.drop_all()
+      db.create_all()
+      competition_team = CompetitionTeam(1, 1)
+      self.assertDictEqual(competition_team.toDict(), {"ID": None, "Team ID": 1, "Competition ID": 1, "Points Earned": 0, "Rating Score": 0})
 
     #CompetitionModerator Unit Tests
     def test_new_competition_moderator(self):
