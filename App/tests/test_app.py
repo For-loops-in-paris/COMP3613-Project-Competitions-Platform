@@ -273,6 +273,19 @@ class UnitTests(unittest.TestCase):
       leaderboard = Leaderboard(current_date)
       current_date = current_date.strftime("%d %b %Y")
       self.assertDictEqual(leaderboard.get_json(), {"id": None, "date": current_date})
+    
+    #Ranking Unit Tests  
+    def test_new_ranking(self):
+      db.drop_all() 
+      db.create_all()
+      ranking = Ranking(1, 1, 10, 20, True)
+      assert ranking.user_id == 1 and ranking.leaderboard_id == 1 and ranking.rank == 10 and ranking.points == 20 and ranking.decaying == True
+      
+    def test_ranking_get_json(self):
+      db.drop_all()
+      db.create_all()
+      ranking = Ranking(1, 1, 10, 20, True)
+      self.assertDictEqual(ranking.get_json(), {"id": None, "user_id": 1, "leaderboard_id": 1, "rank": 10, "points": 20, "decaying": True})
 
 '''
     Integration Tests
