@@ -54,14 +54,14 @@ def logout():
 def signup():
     if request.method == 'POST':
         student = create_student(request.form['username'], request.form['password'])
+            
+        if not student:
+            flash('Username not available', category="error")
+            return render_template('signup.html', user=current_user)
         
-        if student:
-            flash('Username not available!', category="error")
-
-            if request.form['username'] == student.username:
-                flash('Account created successfully!', category="success")
-                login_user(student)
-                session['user_type'] = 'student'
-                return redirect(url_for('index_views.leaderboard_page',leaderboard_id=0))
+        flash('Account created successfully!', category="success")
+        login_user(student)
+        session['user_type'] = 'student'
+        return redirect(url_for('index_views.leaderboard_page',leaderboard_id=0))
     
     return render_template('signup.html', user=current_user)
