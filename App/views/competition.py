@@ -60,11 +60,54 @@ def create_comp():
     #return (jsonify({'error': "Error creating competition"}),500)
     #return render_template('competitions.html', competitions=get_all_competitions())
 
+
+
+@comp_views.route('/editcompetition/<int:comp_id>', methods=['POST'])
+@login_required
+@moderator_required
+def edit_comp(comp_id):
+    comp = get_competition(comp_id)
+    if comp.confirm:
+        flash("Edits cannot be made")
+        return
+    data = request.form
+    
+    if session['user_type'] == 'moderator':
+        moderator = Moderator.query.filter_by(id=current_user.id).first()
+    else:
+        moderator = None
+
+    date = data['date']
+    date = date[8] + date[9] + '-' + date[5] + date[6] + '-' + date[0] + date[1] + date[2] + date[3]
+    
+    new_comp_name = data['name']
+    all_competitions = get_all_competitions()
+
+    for comp in all_competitions:
+        if comp.name == new_comp_name:
+            flash('Competition name already taken! Please try another name', 'error')
+            return redirect(url_for('comp_views.edit_comp_page',comp_id=comp_id))
+        
+    new_comp_score = int(data['max_score'])
+    if new_comp_score < 1:
+        flash('Competition max score must be above 0! Try again', 'error')
+        return redirect(url_for('comp_views.create_comp_page'))
+
+    
+    edit_competition(comp_id, data['name'], date, data['location'], data['level'], data['max_score'])
+    return render_template('competitions.html', competitions=get_all_competitions(), user=current_user)
+
 #page to create new comp
 @comp_views.route('/createcompetition', methods=['GET'])
 @moderator_required
 def create_comp_page():
     return render_template('competition_creation.html', user=current_user)
+
+@comp_views.route('/editcompetition/<int:comp_id>', methods=['GET'])
+@moderator_required
+def edit_comp_page(comp_id):
+    competition = get_competition(comp_id)
+    return render_template('competition_modification.html', user=current_user, competition=competition)
 
 """
 @comp_views.route('/competitions/moderator', methods=['POST'])

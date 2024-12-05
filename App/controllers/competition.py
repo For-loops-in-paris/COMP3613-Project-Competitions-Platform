@@ -2,6 +2,8 @@ from App.database import db
 from App.models import Competition, Moderator, CompetitionTeam, Team, Student#, Student, Admin, competition_student
 from datetime import datetime
 
+from flask import flash
+
 def create_competition(mod_name, comp_name, date, location, level, max_score):
     comp = get_competition_by_name(comp_name)
     if comp:
@@ -23,6 +25,32 @@ def create_competition(mod_name, comp_name, date, location, level, max_score):
             return None
     else:
         print("Invalid credentials!")
+
+
+def edit_competition(comp_id,comp_name, date, location, level, max_score):
+    comp = get_competition_by_name(comp_name)
+    if comp:
+        print(f'{comp_name} already exists!')
+        return None
+    comp = get_competition(comp_id)
+    if comp:
+        date=datetime.strptime(date, "%d-%m-%Y")
+        comp.name = comp_name
+        comp.date=date
+        comp.location=location
+        comp.level = level
+        comp.max_score=max_score
+
+        try:
+            db.session.commit()
+            flash(f'Competition: {comp_name} successfully updated!')
+        except Exception as e:
+            db.session.rollback()
+            print("Something went wrong!")
+            return None
+    else:
+        print("Invalid credentials!")
+
 
 def get_competition_by_name(name):
     comp =Competition.query.filter_by(name=name).first()
