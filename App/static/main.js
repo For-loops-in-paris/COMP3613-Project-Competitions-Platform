@@ -31,8 +31,5 @@ function closeFlash(){
     document.getElementById("flashmessage").style.display = "none";
 }
 
-/*function closeMessage(){
-    document.getElementById("error_message").style.display = "none";
-}*/
 
 main();

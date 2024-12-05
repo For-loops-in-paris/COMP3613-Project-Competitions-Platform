@@ -101,15 +101,6 @@
         border-bottom: 1px solid white;
     }
 
-    /*.leaderboard-table th {
-        background-color: #f2f2f2;
-        font-weight: bold;
-    }
-
-    .leaderboard-table tbody tr:nth-child(even) {
-        background-color: #f2f2f2;
-    }*/
-
     .leaderboard-table tbody tr:hover {
         background-color: black;
     }
@@ -127,6 +118,7 @@
 <div class="container">
     <div class="tables-container">
         <div class="leaderboard-table">
+            
             <!-- for displaying the flashed messages -->
             <div id="flashmessage" class="flashmessage">
                 {% for category, message in get_flashed_messages(with_categories=true) %}
