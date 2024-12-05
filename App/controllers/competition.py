@@ -38,7 +38,7 @@ def edit_competition(comp_id,comp_name, date, location, level, max_score):
         comp.name = comp_name
         comp.date=date
         comp.location=location
-        comp.ylevel = level
+        comp.level = level
         comp.max_score=max_score
 
         try:
