@@ -610,3 +610,57 @@ class IntegrationTests(unittest.TestCase):
       team2 = create_team("team2", students)
       new_comp_team = comp.add_team(team2)
       assert new_comp_team.comp_id == 1 and new_comp_team.team_id == 2
+      
+    def test31_create_moderator(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      assert moderator.username == "lebron"
+      
+    def test32_get_moderator_by_username(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      returned_mod = get_moderator_by_username("lebron")
+      assert returned_mod.username == moderator.username
+      
+    def test33_get_moderator_by_id(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      returned_mod = get_moderator(moderator.id)
+      assert returned_mod.username == moderator.username
+      
+    def test34_get_all_moderators(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      returned_mod = get_all_moderators()
+      assert returned_mod[0].username == moderator.username
+      
+    def test35_update_moderator(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      returned_mod = update_moderator(moderator.id, "steph")
+      assert returned_mod.username == "steph"
+      
+    def test35_isValid(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      mod2 = create_moderator("steph", "stephpass")
+      comp_mods = add_mod("lebron", "Code Wars", "steph")
+      returned_mod = isValid(moderator, comp)
+      assert returned_mod == False
+      
+    def test_36_isRegisteredMod(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      returned_mod = isRegisteredMod(moderator, comp)
+      assert returned_mod == True
+      
+  
