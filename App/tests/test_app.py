@@ -492,3 +492,120 @@ class IntegrationTests(unittest.TestCase):
       team = create_team("team1", students)
       added_student = team.add_student(student2)
       assert added_student.team_id == 1 and added_student.student_id == 2
+      
+    def test21_create_competition(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      assert comp.name == "Code Wars" and comp.location == "St. Augustine" and comp.level == 1 and comp.max_score == 25 and comp.moderators[0].username == "lebron"
+      
+    def test22_get_competition_by_name(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      returned_comp = get_competition_by_name("Code Wars")
+      assert returned_comp.name == comp.name
+      
+    def test23_get_competition_by_id(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      returned_comp = get_competition(comp.id)
+      assert returned_comp.name == comp.name
+      
+    def test24_get_all_competitions(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      all_comps = get_all_competitions()
+      assert all_comps == [comp]
+      
+    def test25_is_completed(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      assert comp.confirm == False
+      
+    def test26_get_num_teams(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      added_team = add_team("lebron", "Code Wars", "team1", students)
+      num_teams = get_num_teams(comp)
+      assert num_teams == 1
+      
+    def test27_get_all_competitions_json(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      all_comps_json = get_all_competitions_json()
+      comp_json = {
+          "id" : 1,
+          "name" : "Code Wars",
+          "date" : "26-01-2024",
+          "location" : "St. Augustine",
+          "level" : 1,
+          "max_score" : 25,
+          "moderators" : ["lebron"],
+          "teams" : []
+      }
+      expected = [comp_json]
+      self.assertListEqual(all_comps_json, expected)
+      
+    def test28_display_competition_results(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      added_team = add_team("lebron", "Code Wars", "team1", students)
+      leaderboard = display_competition_results("Code Wars")
+      add_results("lebron","Code Wars", "team1", 0)
+      expected = [{
+        "placement": 1,
+        "team": "team1",
+        "members": ["billy", "rob"],
+        "score": 0,
+      }]
+      print(leaderboard)
+      assert leaderboard == expected
+      
+    def test29_add_moderator(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      mod2 = create_moderator("obama", "obamapass")
+      comp_mods = comp.add_mod(mod2)
+      assert comp_mods.comp_id == 1 and comp_mods.mod_id == 2
+      
+    def test30_add_team(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team1 = create_team("team1", students)
+      added_team = add_team("lebron", "Code Wars", "team1", students)
+      student3 = create_student("bobby", "bobbypass")
+      student4 = create_student("thor", "thorpass")
+      students = ["bobby", "thor"]
+      team2 = create_team("team2", students)
+      new_comp_team = comp.add_team(team2)
+      assert new_comp_team.comp_id == 1 and new_comp_team.team_id == 2
