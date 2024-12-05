@@ -292,317 +292,375 @@ class UnitTests(unittest.TestCase):
 '''
 class IntegrationTests(unittest.TestCase):
     
-    #Feature 1 Integration Tests
-    def test1_create_competition(self):
+    #Student Integration Tests
+    def test01_create_student(self):
       db.drop_all()
       db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      assert comp.name == "RunTime" and comp.date.strftime("%d-%m-%Y") == "29-03-2024" and comp.location == "St. Augustine" and comp.level == 2 and comp.max_score == 25
-
-    def test2_create_competition(self):
+      new_student = create_student("billy", "billypass")
+      assert new_student.username == "billy"
+    
+    def test02_get_student_by_username(self):
       db.drop_all()
       db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      self.assertDictEqual(comp.get_json(), {"id": 1, "name": "RunTime", "date": "29-03-2024", "location": "St. Augustine", "level": 2, "max_score": 25, "moderators": ["debra"], "teams": []})
+      new_student = create_student("billy", "billypass")
+      returned_student = get_student_by_username("billy")
+      assert returned_student.username == "billy"
       
-    #Feature 2 Integration Tests
-    def test1_add_results(self):
+    def test03_get_student_by_id(self):
       db.drop_all()
       db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      students = [student1.username, student2.username, student3.username]
-      team = add_team(mod.username, comp.name, "Runtime Terrors", students)
-      comp_team = add_results(mod.username, comp.name, "Runtime Terrors", 15)
-      assert comp_team.points_earned == 15
+      new_student = create_student("billy", "billypass")
+      returned_student = get_student(new_student.id)
+      assert returned_student.username == "billy"
+      
+    def test04_get_all_students(self):
+      db.drop_all()
+      db.create_all()
+      student = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      all_students = get_all_students()
+      usernames = [s.username for s in all_students]
+      self.assertEqual(usernames, ["billy", "rob"])
+      
+    def test05_get_decayed_students(self):
+      db.drop_all()
+      db.create_all()
+      student = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      decayed_students = get_decayed_students()
+      usernames = [s.username for s in decayed_students]
+      self.assertEqual(usernames, [])
     
-    def test2_add_results(self):
+    def test06_get_all_students_json(self):
       db.drop_all()
       db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      students = [student1.username, student2.username, student3.username]
-      add_team(mod.username, comp.name, "Runtime Terrors", students)
-      comp_team = add_results(mod.username, comp.name, "Runtime Terrors", 15)
-      students = [student1.username, student4.username, student5.username]
-      team = add_team(mod.username, comp.name, "Scrum Lords", students)
-      assert team == None
+      student = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      all_students_json = get_all_students_json()
+      expected_json = [{"id": 1, "username": "billy", "rating_score": 0, "comp_count": 0, "curr_rank": 0}, {"id": 2, "username": "rob", "rating_score": 0, "comp_count": 0, "curr_rank": 0}]
+      self.assertListEqual(all_students_json, expected_json)
+      
+    def test07_update_student(self):
+      db.drop_all()
+      db.create_all()
+      student = create_student("billy", "billypass")
+      update_student(student.id, "bob")
+      student = get_student_by_username("bob")
+      assert student.username == "bob"
     
-    def test3_add_results(self):
+    def test08_display_student_info(self):
       db.drop_all()
       db.create_all()
-      mod1 = create_moderator("debra", "debrapass")
-      mod2 = create_moderator("robert", "robertpass")
-      comp = create_competition(mod1.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      students = [student1.username, student2.username, student3.username]
-      team = add_team(mod2.username, comp.name, "Runtime Terrors", students)
-      assert team == None
-
-    #Feature 3 Integration Tests
-    def test_display_student_info(self):
-      db.drop_all()
-      db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      students = [student1.username, student2.username, student3.username]
-      team = add_team(mod.username, comp.name, "Runtime Terrors", students)
-      comp_team = add_results(mod.username, comp.name, "Runtime Terrors", 15)
-      update_ratings(mod.username, comp.name)
-      update_rankings()
-      self.assertDictEqual(display_student_info("james"), {"profile": {'id': 1, 'username': 'james', 'rating_score': 24.0, 'comp_count': 1, 'curr_rank': 1}, "competitions": ['RunTime']})
-
-    #Feature 4 Integration Tests
-    def test_display_competition(self):
-      db.drop_all()
-      db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      student6 = create_student("ryan", "ryanpass")
-      student7 = create_student("isabella", "isabellapass")
-      student8 = create_student("richard", "richardpass")
-      student9 = create_student("jessica", "jessicapass")
-      students1 = [student1.username, student2.username, student3.username]
-      team1 = add_team(mod.username, comp.name, "Runtime Terrors", students1)
-      comp_team1 = add_results(mod.username, comp.name, "Runtime Terrors", 15)
-      students2 = [student4.username, student5.username, student6.username]
-      team2 = add_team(mod.username, comp.name, "Scrum Lords", students2)
-      comp_team2 = add_results(mod.username, comp.name, "Scrum Lords", 12)
-      students3 = [student7.username, student8.username, student9.username]
-      team3 = add_team(mod.username, comp.name, "Beyond Infinity", students3)
-      comp_team = add_results(mod.username, comp.name, "Beyond Infinity", 10)
-      update_ratings(mod.username, comp.name)
-      update_rankings()
-      self.assertDictEqual(comp.get_json(), {'id': 1, 'name': 'RunTime', 'date': '29-03-2024', 'location': 'St. Augustine', 'level': 2, 'max_score': 25, 'moderators': ['debra'], 'teams': ['Runtime Terrors', 'Scrum Lords', 'Beyond Infinity']})
-
-    #Feature 5 Integration Tests
-    def test_display_rankings(self):
-      db.drop_all()
-      db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      student6 = create_student("ryan", "ryanpass")
-      students1 = [student1.username, student2.username, student3.username]
-      team1 = add_team(mod.username, comp.name, "Runtime Terrors", students1)
-      comp_team1 = add_results(mod.username, comp.name, "Runtime Terrors", 15)
-      students2 = [student4.username, student5.username, student6.username]
-      team2 = add_team(mod.username, comp.name, "Scrum Lords", students2)
-      comp_team2 = add_results(mod.username, comp.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp.name)
-      update_rankings()
-      self.assertListEqual(display_rankings(), [{"placement": 1, "student": "james", "rating score": 24.0}, {"placement": 1, "student": "steven", "rating score": 24.0}, {"placement": 1, "student": "emily", "rating score": 24.0}, {"placement": 4, "student": "mark", "rating score": 16.0}, {"placement": 4, "student": "eric", "rating score": 16.0}, {"placement": 4, "student": "ryan", "rating score": 16.0}])
-
-    #Feature 6 Integration Tests
-    def test1_display_notification(self):
-      db.drop_all()
-      db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      student6 = create_student("ryan", "ryanpass")
-      students1 = [student1.username, student2.username, student3.username]
-      team1 = add_team(mod.username, comp.name, "Runtime Terrors", students1)
-      comp_team1 = add_results(mod.username, comp.name, "Runtime Terrors", 15)
-      students2 = [student4.username, student5.username, student6.username]
-      team2 = add_team(mod.username, comp.name, "Scrum Lords", students2)
-      comp_team2 = add_results(mod.username, comp.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp.name)
-      update_rankings()
-      self.assertDictEqual(display_notifications("james"), {"notifications": [{"ID": 1, "Notification": "RANK : 1. Congratulations on your first rank!"}]})
-
-    def test2_display_notification(self):
-      db.drop_all()
-      db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp1 = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      comp2 = create_competition(mod.username, "Hacker Cup", "23-02-2024", "Macoya", 1, 30)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      student6 = create_student("ryan", "ryanpass")
-      students1 = [student1.username, student2.username, student3.username]
-      team1 = add_team(mod.username, comp1.name, "Runtime Terrors", students1)
-      comp1_team1 = add_results(mod.username, comp1.name, "Runtime Terrors", 15)
-      students2 = [student4.username, student5.username, student6.username]
-      team2 = add_team(mod.username, comp1.name, "Scrum Lords", students2)
-      comp1_team2 = add_results(mod.username, comp1.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp1.name)
-      update_rankings()
-      students3 = [student1.username, student4.username, student5.username]
-      team3 = add_team(mod.username, comp2.name, "Runtime Terrors", students3)
-      comp_team3 = add_results(mod.username, comp2.name, "Runtime Terrors", 15)
-      students4 = [student2.username, student3.username, student6.username]
-      team4 = add_team(mod.username, comp2.name, "Scrum Lords", students4)
-      comp_team4 = add_results(mod.username, comp2.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp2.name)
-      update_rankings()
-      self.assertDictEqual(display_notifications("james"), {"notifications": [{"ID": 1, "Notification": "RANK : 1. Congratulations on your first rank!"}, {"ID": 7, "Notification": "RANK : 1. Well done! You retained your rank."}]})
-
-    def test3_display_notification(self):
-      db.drop_all()
-      db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp1 = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      comp2 = create_competition(mod.username, "Hacker Cup", "23-02-2024", "Macoya", 1, 20)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      student6 = create_student("ryan", "ryanpass")
-      students1 = [student1.username, student2.username, student3.username]
-      team1 = add_team(mod.username, comp1.name, "Runtime Terrors", students1)
-      comp1_team1 = add_results(mod.username, comp1.name, "Runtime Terrors", 15)
-      students2 = [student4.username, student5.username, student6.username]
-      team2 = add_team(mod.username, comp1.name, "Scrum Lords", students2)
-      comp1_team2 = add_results(mod.username, comp1.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp1.name)
-      update_rankings()
-      students3 = [student1.username, student4.username, student5.username]
-      team3 = add_team(mod.username, comp2.name, "Runtime Terrors", students3)
-      comp_team3 = add_results(mod.username, comp2.name, "Runtime Terrors", 20)
-      students4 = [student2.username, student3.username, student6.username]
-      team4 = add_team(mod.username, comp2.name, "Scrum Lords", students4)
-      comp_team4 = add_results(mod.username, comp2.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp2.name)
-      update_rankings()
-      self.assertDictEqual(display_notifications("steven"), {"notifications": [{"ID": 2, "Notification": "RANK : 1. Congratulations on your first rank!"}, {"ID": 10, "Notification": "RANK : 4. Oh no! Your rank has went down."}]})
-
-    def test4_display_notification(self):
-      db.drop_all()
-      db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp1 = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      comp2 = create_competition(mod.username, "Hacker Cup", "23-02-2024", "Macoya", 1, 20)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      student6 = create_student("ryan", "ryanpass")
-      students1 = [student1.username, student2.username, student3.username]
-      team1 = add_team(mod.username, comp1.name, "Runtime Terrors", students1)
-      comp1_team1 = add_results(mod.username, comp1.name, "Runtime Terrors", 15)
-      students2 = [student4.username, student5.username, student6.username]
-      team2 = add_team(mod.username, comp1.name, "Scrum Lords", students2)
-      comp1_team2 = add_results(mod.username, comp1.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp1.name)
-      update_rankings()
-      students3 = [student1.username, student4.username, student5.username]
-      team3 = add_team(mod.username, comp2.name, "Runtime Terrors", students3)
-      comp_team3 = add_results(mod.username, comp2.name, "Runtime Terrors", 20)
-      students4 = [student2.username, student3.username, student6.username]
-      team4 = add_team(mod.username, comp2.name, "Scrum Lords", students4)
-      comp_team4 = add_results(mod.username, comp2.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp2.name)
-      update_rankings()
-      self.assertDictEqual(display_notifications("mark"), {"notifications": [{"ID": 4, "Notification": "RANK : 4. Congratulations on your first rank!"}, {"ID": 8, "Notification": "RANK : 2. Congratulations! Your rank has went up."}]})
-
-    #Additional Integration Tests
-    def test1_add_mod(self):
-      db.drop_all()
-      db.create_all()
-      mod1 = create_moderator("debra", "debrapass")
-      mod2 = create_moderator("robert", "robertpass")
-      comp = create_competition(mod1.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      assert add_mod(mod1.username, comp.name, mod2.username) != None
-       
-    def test2_add_mod(self):
-      db.drop_all()
-      db.create_all()
-      mod1 = create_moderator("debra", "debrapass")
-      mod2 = create_moderator("robert", "robertpass")
-      mod3 = create_moderator("raymond", "raymondpass")
-      comp = create_competition(mod1.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      assert add_mod(mod2.username, comp.name, mod3.username) == None
+      student = create_student("billy", "billypass")
+      student_json = student.get_json()
+      competitions = []
+      expected = {
+        "profile": student.get_json(),
+        "competitions" : []
+      }
+      info = display_student_info(student.username)
+      assert info == expected
     
-    def test_student_list(self):
+    def test09_display_notifications(self):
       db.drop_all()
       db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp1 = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      comp2 = create_competition(mod.username, "Hacker Cup", "23-02-2024", "Macoya", 1, 20)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      student6 = create_student("ryan", "ryanpass")
-      students1 = [student1.username, student2.username, student3.username]
-      team1 = add_team(mod.username, comp1.name, "Runtime Terrors", students1)
-      comp1_team1 = add_results(mod.username, comp1.name, "Runtime Terrors", 15)
-      students2 = [student4.username, student5.username, student6.username]
-      team2 = add_team(mod.username, comp1.name, "Scrum Lords", students2)
-      comp1_team2 = add_results(mod.username, comp1.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp1.name)
-      update_rankings()
-      students3 = [student1.username, student4.username, student5.username]
-      team3 = add_team(mod.username, comp2.name, "Runtime Terrors", students3)
-      comp_team3 = add_results(mod.username, comp2.name, "Runtime Terrors", 20)
-      students4 = [student2.username, student3.username, student6.username]
-      team4 = add_team(mod.username, comp2.name, "Scrum Lords", students4)
-      comp_team4 = add_results(mod.username, comp2.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp2.name)
-      update_rankings()
-      self.assertEqual(get_all_students_json(), [{'id': 1, 'username': 'james', 'rating_score': 22, 'comp_count': 2, 'curr_rank': 1}, {'id': 2, 'username': 'steven', 'rating_score': 17, 'comp_count': 2, 'curr_rank': 4}, {'id': 3, 'username': 'emily', 'rating_score': 17, 'comp_count': 2, 'curr_rank': 4}, {'id': 4, 'username': 'mark', 'rating_score': 18, 'comp_count': 2, 'curr_rank': 2}, {'id': 5, 'username': 'eric', 'rating_score': 18, 'comp_count': 2, 'curr_rank': 2}, {'id': 6, 'username': 'ryan', 'rating_score': 13, 'comp_count': 2, 'curr_rank': 6}])
-
-    def test_comp_list(self):
+      student = create_student("billy", "billypass")
+      notif_message = create_notification(1,0,1)
+      notif = Notification(1, notif_message)
+      added_notification = student.add_notification(notif)
+      expected_notif = {
+        "ID": 1,
+        "Notification": notif_message
+      }
+      
+      expected_output = {
+        "notifications": [expected_notif]
+    }
+      notifications = display_notifications(student.username)
+      assert notifications == expected_output
+    
+    
+    def test10_create_notification(self):
       db.drop_all()
       db.create_all()
-      mod = create_moderator("debra", "debrapass")
-      comp1 = create_competition(mod.username, "RunTime", "29-03-2024", "St. Augustine", 2, 25)
-      comp2 = create_competition(mod.username, "Hacker Cup", "23-02-2024", "Macoya", 1, 20)
-      student1 = create_student("james", "jamespass")
-      student2 = create_student("steven", "stevenpass")
-      student3 = create_student("emily", "emilypass")
-      student4 = create_student("mark", "markpass")
-      student5 = create_student("eric", "ericpass")
-      student6 = create_student("ryan", "ryanpass")
-      students1 = [student1.username, student2.username, student3.username]
-      team1 = add_team(mod.username, comp1.name, "Runtime Terrors", students1)
-      comp1_team1 = add_results(mod.username, comp1.name, "Runtime Terrors", 15)
-      students2 = [student4.username, student5.username, student6.username]
-      team2 = add_team(mod.username, comp1.name, "Scrum Lords", students2)
-      comp1_team2 = add_results(mod.username, comp1.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp1.name)
-      update_rankings()
-      students3 = [student1.username, student4.username, student5.username]
-      team3 = add_team(mod.username, comp2.name, "Runtime Terrors", students3)
-      comp_team3 = add_results(mod.username, comp2.name, "Runtime Terrors", 20)
-      students4 = [student2.username, student3.username, student6.username]
-      team4 = add_team(mod.username, comp2.name, "Scrum Lords", students4)
-      comp_team4 = add_results(mod.username, comp2.name, "Scrum Lords", 10)
-      update_ratings(mod.username, comp2.name)
-      update_rankings()
-      self.assertListEqual(get_all_competitions_json(), [{"id": 1, "name": "RunTime", "date": "29-03-2024", "location": "St. Augustine", "level": 2, "max_score": 25, "moderators": ["debra"], "teams": ["Runtime Terrors", "Scrum Lords"]}, {"id": 2, "name": "Hacker Cup", "date": "23-02-2024", "location": "Macoya", "level": 1, "max_score": 20, "moderators": ["debra"], "teams": ["Runtime Terrors", "Scrum Lords"]}])
+      student = create_student("billy", "billypass")
+      notif_message = create_notification(1,0,1)
+      expected_output = "RANK : 1. Congratulations on your first rank!"
+      assert expected_output == notif_message 
+      
+    def test11_add_notification(self):
+      db.drop_all()
+      db.create_all()
+      student = create_student("billy", "billypass")
+      notif_message = create_notification(1,0,1)
+      notif = Notification(1, notif_message)
+      added_notification = student.add_notification(notif)
+      assert added_notification == notif
+    
+    def test12_display_rankings(self):
+      db.drop_all()
+      db.create_all()
+      student = create_student("alice", "password1")
+      leaderboard = display_rankings()
+      expected_leaderboard = []
+      assert leaderboard == expected_leaderboard
+    
+    #Team Integration Tests:
+    def test13_create_team(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      assert team.name == "team1"
+    
+    def test14_get_team_by_name(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      returned_team = get_team_by_name("team1")
+      assert returned_team.name == team.name
+    
+    def test15_get_team_by_id(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      returned_team = get_team(team.id)
+      assert returned_team.name == team.name
+      
+    def test16_get_all_teams(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      all_teams = get_all_teams()
+      assert all_teams[0].name == team.name
+      
+    def test17_get_all_teams_json(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      all_teams_json = get_all_teams_json()
+      team_json = {
+            "id" : 1,
+            "name" : "team1",
+            "students" : ["billy", "rob"]
+      }
+      expected = [team_json]
+      self.assertListEqual(all_teams_json, expected)
+      
+    def test18_find_team(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      returned_team = find_team("team1", students)
+      assert returned_team == team
+    
+    def test19_add_team(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      added_team = add_team("lebron", "Code Wars", "team1", students)
+      assert added_team.comp_id == 1 and added_team.team_id == 1
+      
+    def test20_add_student(self):
+      db.drop_all()
+      db.create_all()
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy"]
+      team = create_team("team1", students)
+      added_student = team.add_student(student2)
+      assert added_student.team_id == 1 and added_student.student_id == 2
+      
+    def test21_create_competition(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      assert comp.name == "Code Wars" and comp.location == "St. Augustine" and comp.level == 1 and comp.max_score == 25 and comp.moderators[0].username == "lebron"
+      
+    def test22_get_competition_by_name(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      returned_comp = get_competition_by_name("Code Wars")
+      assert returned_comp.name == comp.name
+      
+    def test23_get_competition_by_id(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      returned_comp = get_competition(comp.id)
+      assert returned_comp.name == comp.name
+      
+    def test24_get_all_competitions(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      all_comps = get_all_competitions()
+      assert all_comps == [comp]
+      
+    def test25_is_completed(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      confirmed = is_completed(comp)
+      assert confirmed == False
+      
+    def test26_get_num_teams(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      added_team = add_team("lebron", "Code Wars", "team1", students)
+      num_teams = get_num_teams(comp)
+      assert num_teams == 1
+      
+    def test27_get_all_competitions_json(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      all_comps_json = get_all_competitions_json()
+      comp_json = {
+          "id" : 1,
+          "name" : "Code Wars",
+          "date" : "26-01-2024",
+          "location" : "St. Augustine",
+          "level" : 1,
+          "max_score" : 25,
+          "moderators" : ["lebron"],
+          "teams" : []
+      }
+      expected = [comp_json]
+      self.assertListEqual(all_comps_json, expected)
+      
+    def test28_display_competition_results(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team = create_team("team1", students)
+      added_team = add_team("lebron", "Code Wars", "team1", students)
+      leaderboard = display_competition_results("Code Wars")
+      add_results("lebron","Code Wars", "team1", 0)
+      expected = [{
+        "placement": 1,
+        "team": "team1",
+        "members": ["billy", "rob"],
+        "score": 0,
+      }]
+      print(leaderboard)
+      assert leaderboard == expected
+      
+    def test29_add_moderator(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      mod2 = create_moderator("obama", "obamapass")
+      comp_mods = comp.add_mod(mod2)
+      assert comp_mods.comp_id == 1 and comp_mods.mod_id == 2
+      
+    def test30_add_team(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      student1 = create_student("billy", "billypass")
+      student2 = create_student("rob", "robpass")
+      students = ["billy", "rob"]
+      team1 = create_team("team1", students)
+      added_team = add_team("lebron", "Code Wars", "team1", students)
+      student3 = create_student("bobby", "bobbypass")
+      student4 = create_student("thor", "thorpass")
+      students = ["bobby", "thor"]
+      team2 = create_team("team2", students)
+      new_comp_team = comp.add_team(team2)
+      assert new_comp_team.comp_id == 1 and new_comp_team.team_id == 2
+      
+    def test31_create_moderator(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      assert moderator.username == "lebron"
+      
+    def test32_get_moderator_by_username(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      returned_mod = get_moderator_by_username("lebron")
+      assert returned_mod.username == moderator.username
+      
+    def test33_get_moderator_by_id(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      returned_mod = get_moderator(moderator.id)
+      assert returned_mod.username == moderator.username
+      
+    def test34_get_all_moderators(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      returned_mod = get_all_moderators()
+      assert returned_mod[0].username == moderator.username
+      
+    def test35_update_moderator(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      returned_mod = update_moderator(moderator.id, "steph")
+      assert returned_mod.username == "steph"
+      
+    def test35_isValid(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      mod2 = create_moderator("steph", "stephpass")
+      comp_mods = add_mod("lebron", "Code Wars", "steph")
+      returned_mod = isValid(moderator, comp)
+      assert returned_mod == False
+      
+    def test_36_isRegisteredMod(self):
+      db.drop_all()
+      db.create_all()
+      moderator = create_moderator("lebron", "james")
+      comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
+      returned_mod = isRegisteredMod(moderator, comp)
+      assert returned_mod == True
+      
+  
