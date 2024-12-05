@@ -57,6 +57,9 @@
         <button type="button" style="background-color: black; padding: 5px; margin-left: 50px; margin-top: 50px; width: 120px; height: 35px; border-radius: 15px; font-family: helvetica;">
             <a style="color: white" href="{{ url_for('comp_views.confirm_results', comp_name=competition.name) }}">Confirm Results</a>
         </button>
+        <button type="button" style="background-color: black; padding: 5px; margin-left: 50px; margin-top: 50px; width: 200; height: 35px; border-radius: 15px; font-family: helvetica;">
+            <a style="color: white" href="{{ url_for('comp_views.edit_comp_page', comp_id=competition.id) }}">Edit Competition</a>
+        </button>
         {% endif %}
     </div>
 </div>
