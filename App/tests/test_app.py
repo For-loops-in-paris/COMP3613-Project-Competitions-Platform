@@ -529,7 +529,8 @@ class IntegrationTests(unittest.TestCase):
       db.create_all()
       moderator = create_moderator("lebron", "james")
       comp = create_competition("lebron","Code Wars","26-01-2024","St. Augustine",1,25)
-      assert comp.confirm == False
+      confirmed = is_completed(comp)
+      assert confirmed == False
       
     def test26_get_num_teams(self):
       db.drop_all()
